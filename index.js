@@ -2,8 +2,9 @@
  * @format
  */
 
+ import React from "react"
 import Native from 'react-native';
-import root from './app/root';
-import {name as appName} from './app.json';
+import App from './app/root';
+import {name} from './app.json';
 
-Native.AppRegistry.registerComponent(appName, () => root);
+Native.AppRegistry.registerComponent(name, () => App);

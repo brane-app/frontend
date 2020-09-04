@@ -109,7 +109,7 @@ class LoginView extends React.Component {
         }
 
         global_state.imonke_client = this.client
-        console.log("logged in");
+        this.props.navigation.replace("profile")
     }
 
     async submit() {
@@ -182,8 +182,7 @@ class LoginView extends React.Component {
 
     render () {
         return (
-            <View
-                style = {style.generic.view}>
+            <View style = {style.generic.view}>
                 {this.top}
                 {this.inputs}
                 {this.buttons}
