@@ -59,7 +59,6 @@ class ValidPassword extends ValidInput {
 class LoginView extends React.Component {
     constructor (opts) {
         super(opts)
-        this.client = new imonke.Client()
         this.state = {login: true}
 
         this.login_inputs = new Map([
@@ -91,9 +90,12 @@ class LoginView extends React.Component {
         )
 
         let ok = false
+        let client = new imonke.Client({
+            email: values.email,
+        })
+
         try {
-            ok = await this.client.login({
-                email: values.email,
+            ok = await client.login({
                 password: values.password,
             })
         } catch (err) {
@@ -108,7 +110,7 @@ class LoginView extends React.Component {
             return
         }
 
-        global_state.imonke_client = this.client
+        global_state.client = client
         this.props.navigation.replace("profile")
     }
 
