@@ -28,13 +28,12 @@ const things_iu = {
         borderRadius: 8,
 
         color: colors.light,
+        backgroundColor: colors.dark,
     },
 }
 
 const misc = {
     view: {
-        position: "absolute",
-
         backgroundColor: colors.background,
 
         height: "100%",
