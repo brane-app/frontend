@@ -103,6 +103,7 @@ class LoginView extends React.Component {
             // IF YOU HAVE A BUG JUST FIX IT YOURSELF IT'S OPEN SOURCE
             // I am not a frontend developer
             ToastAndroid.show(err, ToastAndroid.SHORT)
+            return
         }
 
         if (!ok) {
