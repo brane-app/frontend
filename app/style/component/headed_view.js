@@ -1,6 +1,7 @@
 import Native from "react-native"
 
 import colors from "../../values/colors"
+import sizes from "../../values/sizes"
 
 const headed_view_things = {
     contain: {
@@ -14,13 +15,15 @@ const headed_view_things = {
         height: "100%",
         width: "100%",
         zIndex: 0,
+
+        paddingTop: sizes.navbar,
     },
 
     header: {
         position: "absolute",
 
         width: "100%",
-        height: 32,
+        height: sizes.navbar,
         zIndex: 1,
     },
 

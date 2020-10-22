@@ -1,7 +1,9 @@
 import colors from "./colors"
+import sizes from "./sizes"
 
 const values = {
-    colors
+    colors,
+    sizes,
 }
 
 export default values
