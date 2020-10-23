@@ -17,7 +17,6 @@ const style = {
     profile: style_profile,
 }
 
-
 class ProfileCard extends React.Component {
     constructor(opts = {}) {
         super()
@@ -189,7 +188,7 @@ class ProfileView extends HeadedView {
         return <ProfileContent client = {this.client}/>
     }
 
-    get content () {
+    get content() {
         return (
             <View style = {[style.generic.view, style.profile.profile_view]}>
                 {this.profile_card}
