@@ -5,8 +5,6 @@ import {
     Text,
 } from "react-native"
 
-import imonke from "imonke"
-
 import HeadedView from "../components/headed_view"
 import global_state from "../state"
 import style_generic from "../style/generic"
