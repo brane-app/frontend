@@ -1,4 +1,4 @@
-#Fri Oct 09 00:48:28 EDT 2020
+#Tue Nov 03 01:23:40 EST 2020
 base.0=/home/zero/Documents/programming/imonke/frontend/android/app/build/intermediates/dex/debug/mergeDexDebug/out/classes.dex
-path.0=classes.dex
 renamed.0=classes.dex
+path.0=classes.dex
