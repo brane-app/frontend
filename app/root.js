@@ -11,14 +11,9 @@ import {
 
 import LoginView from "./views/login"
 import ProfileView from "./views/profile"
+import { NewFeedView } from "./views/feed"
 
 const Stack = createStackNavigator()
-
-function no_navigation({nav}) {
-    return {
-        title: "foobar 2000"
-    }
-}
 
 function App() {
     return (
@@ -31,6 +26,9 @@ function App() {
                 <Stack.Screen
                 name = "profile"
                 component = {ProfileView}/>
+                <Stack.Screen
+                name = "feed_new"
+                component = {NewFeedView}/>
             </Stack.Navigator>
         </NavigationContainer>
     )
