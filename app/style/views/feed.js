@@ -1,12 +1,17 @@
 import Native from "react-native"
 
 const feed_styles = {
-    contain: {
+    contain_image: {
         display: "flex",
         backgroundColor: "white",
 
         width: "100%",
         height: "100%",
+    },
+
+    contain_image_container: {
+        justifyContent: "center",
+        flexGrow: 1,
     },
 
     image: {
@@ -15,6 +20,8 @@ const feed_styles = {
 
         resizeMode: "contain",
     },
+
+    image_scroller: { },
 }
 
 const feed = Native.StyleSheet.create({
