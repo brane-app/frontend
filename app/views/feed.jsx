@@ -1,35 +1,150 @@
-import React from "react"
+import React, { useRef } from "react"
 import {
+    Animated,
     View,
-    Text,
+    ScrollView,
 } from "react-native"
+import AutoHeightImage from "react-native-auto-height-image"
 
 import imonke from "imonke"
 
 import HeadedView from "../components/headed_view"
 import global_state from "../state"
 import style_generic from "../style/generic"
+import style_feed from "../style/views/feed"
 
 const style = {
     generic: style_generic,
+    feed: style_feed,
 }
+
+const debug_pool = [
+    "https://placekitten.com/600/300",
+    "https://placekitten.com/600/600",
+    "https://placekitten.com/600/1600",
+    "https://placekitten.com/420/1500",
+    "https://placekitten.com/520/400",
+    "https://placekitten.com/590/400",
+    "https://placekitten.com/620/300",
+    "https://placekitten.com/690/300",
+    "https://placekitten.com/620/600",
+    "https://placekitten.com/690/600",
+    "https://placekitten.com/620/1600",
+    "https://placekitten.com/690/1600",
+]
 
 class FeedView extends HeadedView {
     constructor(opts = {}) {
         super(opts)
+        this.chunk = 2
         this.client = opts.client || global_state.client
+        this.state = {
+            ...this.state,
+            screen_width: 0, screen_offset: 0,
+            index: 0, buffer: [
+                "https://placekitten.com/490/1500",
+                "https://placekitten.com/500/400",
+                "https://placekitten.com/400/1500",
+            ],
+        }
     }
 
     get name() {
         return "feed"
     }
 
+    get index() {
+        return this.state.index
+    }
+
+    get buffer_index() {
+        return this.state.buffer_index
+    }
+
+    get buffer() {
+        return this.state.buffer
+    }
+
+    get screen_width() {
+        return this.state.screen_width
+    }
+
+    get screen_offset() {
+        return this.state.screen_offset
+    }
+
+    image_of(uri) {
+        return (
+            <ScrollView
+                key = {uri}
+                style = {[style.feed.contain_image]}
+                contentContainerStyle = {[style.feed.contain_image_container]}>
+                <AutoHeightImage
+                    source = {{uri}}
+                    style = {[style.feed.image]}
+                    width = {this.screen_width}/>
+            </ScrollView>
+        )
+    }
+
+    image_at(index) {
+        return this.image_of(this.buffer[uri])
+    }
+
+    get current() {
+        return this.image_at(this.index)
+    }
+
+    get prev() {
+        return this.image_at(this.index - 1)
+    }
+
+    get next() {
+        return this.image_at(this.index + 1)
+    }
+
+    grow_buffer() {
+        if (this.index < this.buffer.length - this.chunk) {
+            return
+        }
+
+        let length = this.buffer.length
+        this.setState({
+            buffer: [...this.buffer, ...debug_pool.slice(length, length + this.chunk)]
+        })
+    }
+
+    handle_scroll(offset) {
+        let snapped = Math.trunc((offset + this.screen_width) % this.screen_width) == 0
+        let movement = Math.round((offset - this.screen_offset) / this.screen_width)
+
+        if (!snapped || Math.abs(movement) == 0) {
+            return
+        }
+
+        this.setState({
+            ...this.state,
+            screen_offset: offset,
+            index: this.index + movement,
+        }, () => { this.grow_buffer() })
+    }
+
     get content() {
         return (
-            <View style = {[style.generic.view]}>
-                <Text>
-                    {"hello, world"}
-                </Text>
+            <View
+                onLayout = {() => { this.grow_buffer() }}
+                style = {[style.generic.view]}>
+                <ScrollView
+                    ref = { scroll_view => this.scroll_view = scroll_view }
+                    onLayout = { event => this.setState({ ...this.state, screen_width: event.nativeEvent.layout.width }) }
+                    onScroll = { event => this.handle_scroll(event.nativeEvent.contentOffset.x) }
+                    contentContainerStyle = {[style.feed.contain_image_container]}
+                    horizontal = {true}
+                    pagingEnabled
+                    scrollEventThrottle = {1}
+                    style = {[style.feed.image_scroller]}>
+                        {this.buffer.map(it => this.image_of(it))}
+                </ScrollView>
             </View>
         )
     }
@@ -44,6 +159,7 @@ class NewFeedView extends FeedView {
     get name() {
         return "new"
     }
+
 }
 
 module.exports = {
