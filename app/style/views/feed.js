@@ -3,7 +3,6 @@ import Native from "react-native"
 const feed_styles = {
     contain_image: {
         display: "flex",
-        backgroundColor: "white",
 
         width: "100%",
         height: "100%",
