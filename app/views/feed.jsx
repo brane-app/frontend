@@ -9,6 +9,7 @@ import AutoHeightImage from "react-native-auto-height-image"
 import imonke from "imonke"
 
 import HeadedView from "../components/headed_view"
+import Content from "../components/content"
 import global_state from "../state"
 import style_generic from "../style/generic"
 import style_feed from "../style/views/feed"
@@ -18,37 +19,23 @@ const style = {
     feed: style_feed,
 }
 
-const debug_pool = [
-    "https://placekitten.com/600/300",
-    "https://placekitten.com/600/600",
-    "https://placekitten.com/600/1600",
-    "https://placekitten.com/420/1500",
-    "https://placekitten.com/520/400",
-    "https://placekitten.com/590/400",
-    "https://placekitten.com/620/300",
-    "https://placekitten.com/690/300",
-    "https://placekitten.com/620/600",
-    "https://placekitten.com/690/600",
-    "https://placekitten.com/620/1600",
-    "https://placekitten.com/690/1600",
-]
-
 class FeedView extends HeadedView {
     constructor(opts = {}) {
         super(opts)
-        this.border = 1
-        this.chunk = 2
+        this.border = 3
+        this.chunk = 30
         this.head = ""
+        this.tail = ""
         this.client = opts.client || global_state.client
         this.state = {
             ...this.state,
             screen_width: 0, screen_offset: 0,
-            index: 0, buffer: [],
+            index: 0, buffer: [], drawable_buffer: []
         }
     }
 
     get name() {
-        return "feed"
+        return "Feed"
     }
 
     get screen_width() {
@@ -63,42 +50,16 @@ class FeedView extends HeadedView {
         return this.state.index
     }
 
-    get buffer_index() {
-        return this.state.buffer_index
-    }
-
     get buffer() {
         return this.state.buffer
     }
 
-    image_of(uri) {
-        return (
-            <ScrollView
-                key = {uri}
-                style = {[style.feed.contain_image]}
-                contentContainerStyle = {[style.feed.contain_image_container]}>
-                <AutoHeightImage
-                    source = {{uri}}
-                    style = {[style.feed.image]}
-                    width = {this.screen_width}/>
-            </ScrollView>
-        )
+    get drawable_buffer() {
+        return this.state.drawable_buffer
     }
 
-    image_at(index) {
-        return this.image_of(this.buffer[uri])
-    }
-
-    get current() {
-        return this.image_at(this.index)
-    }
-
-    get prev() {
-        return this.image_at(this.index - 1)
-    }
-
-    get next() {
-        return this.image_at(this.index + 1)
+    async reset() {
+        this.setState({ buffer: [], drawable_buffer: [] }, () => this.grow_buffer())
     }
 
     async grow_buffer() {
@@ -110,15 +71,25 @@ class FeedView extends HeadedView {
             size: this.chunk,
             before: this.head,
         })
+        let buffer = [...this.buffer, ...fetched]
+        let drawable_buffer = [
+            ...this.drawable_buffer,
+            ...fetched.map(it => (
+                <Content
+                    content = {it}
+                    screen_width = {this.screen_width}
+                    key = {`${Math.random()}`}/>
+            ))
+        ]
 
-        // TODO: race condition?
         this.head = await fetched[fetched.length - 1].id
         this.setState({
-            buffer: [...this.buffer, ...(await Promise.all(fetched.map(it => it.file_url)))]
+            buffer: [...this.buffer, ...fetched],
+            drawable_buffer: drawable_buffer,
         })
     }
 
-    handle_scroll(offset) {
+    async handle_scroll(offset) {
         let snapped = Math.trunc((offset + this.screen_width) % this.screen_width) == 0
         let movement = Math.round((offset - this.screen_offset) / this.screen_width)
 
@@ -133,22 +104,25 @@ class FeedView extends HeadedView {
         }, () => { this.grow_buffer() })
     }
 
+    get scroller() {
+        return (
+            <ScrollView
+                pagingEnabled
+                horizontal = {true}
+                style = {[style.feed.image_scroller]}
+                onLayout = { event => this.setState({ screen_width: event.nativeEvent.layout.width }) }
+                onScroll = { event => this.handle_scroll(event.nativeEvent.contentOffset.x) }>
+                {this.drawable_buffer}
+            </ScrollView>
+        )
+    }
+
     get content() {
         return (
             <View
-                onLayout = {() => { this.grow_buffer() }}
-                style = {[style.generic.view]}>
-                <ScrollView
-                    ref = { scroll_view => this.scroll_view = scroll_view }
-                    onLayout = { event => this.setState({ ...this.state, screen_width: event.nativeEvent.layout.width }) }
-                    onScroll = { event => this.handle_scroll(event.nativeEvent.contentOffset.x) }
-                    contentContainerStyle = {[style.feed.contain_image_container]}
-                    horizontal = {true}
-                    pagingEnabled
-                    scrollEventThrottle = {1}
-                    style = {[style.feed.image_scroller]}>
-                        {this.buffer.map(it => this.image_of(it))}
-                </ScrollView>
+                style = {[style.generic.view]}
+                onLayout = {() => { this.grow_buffer() }}>
+                {this.scroller}
             </View>
         )
     }
