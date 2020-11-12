@@ -27,7 +27,7 @@ function App() {
                 name = "profile"
                 component = {ProfileView}/>
                 <Stack.Screen
-                name = "feed_new"
+                name = "feed_all"
                 component = {AllFeedView}/>
             </Stack.Navigator>
         </NavigationContainer>

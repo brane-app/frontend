@@ -113,8 +113,8 @@ class HeadedView extends React.Component {
         return (
             <>
             <NavButton
-                text = {"New"}
-                onPress = {this.navigate_to("feed_new")}/>
+                text = {"All"}
+                onPress = {this.navigate_to("feed_all")}/>
             <NavButton
                 text = {"Profile"}
                 onPress = {this.navigate_to("profile")}/>
