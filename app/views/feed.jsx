@@ -36,21 +36,27 @@ const debug_pool = [
 class FeedView extends HeadedView {
     constructor(opts = {}) {
         super(opts)
+        this.border = 1
         this.chunk = 2
+        this.head = ""
         this.client = opts.client || global_state.client
         this.state = {
             ...this.state,
             screen_width: 0, screen_offset: 0,
-            index: 0, buffer: [
-                "https://placekitten.com/490/1500",
-                "https://placekitten.com/500/400",
-                "https://placekitten.com/400/1500",
-            ],
+            index: 0, buffer: [],
         }
     }
 
     get name() {
         return "feed"
+    }
+
+    get screen_width() {
+        return this.state.screen_width
+    }
+
+    get screen_offset() {
+        return this.state.screen_offset
     }
 
     get index() {
@@ -63,14 +69,6 @@ class FeedView extends HeadedView {
 
     get buffer() {
         return this.state.buffer
-    }
-
-    get screen_width() {
-        return this.state.screen_width
-    }
-
-    get screen_offset() {
-        return this.state.screen_offset
     }
 
     image_of(uri) {
@@ -103,14 +101,20 @@ class FeedView extends HeadedView {
         return this.image_at(this.index + 1)
     }
 
-    grow_buffer() {
-        if (this.index < this.buffer.length - this.chunk) {
+    async grow_buffer() {
+        if (this.index < this.buffer.length - this.border) {
             return
         }
 
-        let length = this.buffer.length
+        let fetched = await this.feed.get({
+            size: this.chunk,
+            before: this.head,
+        })
+
+        // TODO: race condition?
+        this.head = await fetched[fetched.length - 1].id
         this.setState({
-            buffer: [...this.buffer, ...debug_pool.slice(length, length + this.chunk)]
+            buffer: [...this.buffer, ...(await Promise.all(fetched.map(it => it.file_url)))]
         })
     }
 
@@ -150,19 +154,19 @@ class FeedView extends HeadedView {
     }
 }
 
-class NewFeedView extends FeedView {
+class AllFeedView extends FeedView {
     constructor(opts = {}) {
         super(opts)
-        this.feed = new imonke.Feed( {feed: "new"} )
+        this.feed = new imonke.Feed( {feed: "all"} )
     }
 
     get name() {
-        return "new"
+        return "All"
     }
 
 }
 
 module.exports = {
     FeedView,
-    NewFeedView,
+    AllFeedView,
 }

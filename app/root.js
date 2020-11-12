@@ -11,7 +11,7 @@ import {
 
 import LoginView from "./views/login"
 import ProfileView from "./views/profile"
-import { NewFeedView } from "./views/feed"
+import { AllFeedView } from "./views/feed"
 
 const Stack = createStackNavigator()
 
@@ -28,7 +28,7 @@ function App() {
                 component = {ProfileView}/>
                 <Stack.Screen
                 name = "feed_new"
-                component = {NewFeedView}/>
+                component = {AllFeedView}/>
             </Stack.Navigator>
         </NavigationContainer>
     )
