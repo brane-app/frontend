@@ -134,10 +134,10 @@ const profile_content_styles = {
     },
 }
 
-const profile = Native.StyleSheet.create({
+const style = Native.StyleSheet.create({
     ...profile_view_styles,
     ...profile_card_styles,
     ...profile_content_styles,
 })
 
-export default profile
+export default style

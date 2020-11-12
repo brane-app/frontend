@@ -73,10 +73,10 @@ const button_styles = {
     },
 }
 
-const login = Native.StyleSheet.create({
+const style = Native.StyleSheet.create({
     ...top_styles,
     ...input_styles,
     ...button_styles,
 })
 
-export default login
+export default style

@@ -4,10 +4,10 @@ import feed from "./feed"
 import login from "./login"
 import profile from "./profile"
 
-const views = Native.StyleSheet.flatten ([
+const style = Native.StyleSheet.flatten ([
     feed,
     login,
     profile,
 ])
 
-export default views
+export default style
