@@ -59,7 +59,7 @@ class ValidPassword extends ValidInput {
 class LoginView extends React.Component {
     constructor (opts) {
         super(opts)
-        this.state = {login: true}
+        this.state = {login: false}
 
         this.login_inputs = new Map([
             ["email", new ValidInput({title: "email"})],
@@ -67,14 +67,44 @@ class LoginView extends React.Component {
         ])
 
         this.register_inputs = new Map([
-            ["nick", new ValidInput({title: "nick"})],
+            ["nick", new ValidInput({title: "nick", "validator": it => it.length > 3})],
             ["email", new ValidInput({title: "email"})],
             ["password", new ValidPassword({title: "password"})],
         ])
     }
 
     async submit_register() {
-        ToastAndroid.show("Not implemented", ToastAndroid.SHORT)
+        for (let it of this.register_inputs.entries()) {
+            if (!it[1].valid) {
+                ToastAndroid.show(`Invalid ${it[0]}`, ToastAndroid.SHORT)
+            }
+        }
+
+        let values = Object.fromEntries(
+            Array.from(this.register_inputs.entries(), it => [it[0], it[1].value])
+        )
+
+        let ok = false
+        let client = new imonke.Client()
+
+        try {
+            ok = await client.create({
+                nick: values.nick,
+                email: values.email,
+                password: values.password,
+            })
+        } catch (err) {
+            ToastAndroid.show(err, ToastAndroid.SHORT)
+            return
+        }
+
+        if (!ok) {
+            ToastAndroid.show("Could not register", ToastAndroid.SHORT)
+            return
+        }
+
+        global_state.client = client
+        this.props.navigation.replace("profile")
     }
 
     async submit_login() {
