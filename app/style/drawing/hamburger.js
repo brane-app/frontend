@@ -1,6 +1,6 @@
-import Native from "react-native"
+import { StyleSheet } from "react-native"
 
-const hamburger = Native.StyleSheet.create({
+const hamburger = StyleSheet.create({
     hamburger: {
         height: 32,
         width: 32,

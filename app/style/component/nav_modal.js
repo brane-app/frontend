@@ -1,4 +1,4 @@
-import Native from "react-native"
+import { StyleSheet } from "react-native"
 
 import colors from "../../values/colors"
 
@@ -47,7 +47,7 @@ const modal_things = {
     },
 }
 
-const nav_modal = Native.StyleSheet.create({
+const nav_modal = StyleSheet.create({
     ...modal_things,
 })
 

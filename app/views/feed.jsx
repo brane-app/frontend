@@ -4,7 +4,6 @@ import {
     View,
     ScrollView,
 } from "react-native"
-import AutoHeightImage from "react-native-auto-height-image"
 
 import imonke from "imonke"
 
@@ -140,7 +139,4 @@ class AllFeedView extends FeedView {
 
 }
 
-module.exports = {
-    FeedView,
-    AllFeedView,
-}
+export { FeedView, AllFeedView }

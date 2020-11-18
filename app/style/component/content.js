@@ -1,4 +1,4 @@
-import Native from "react-native"
+import { StyleSheet } from "react-native"
 
 const content_styles = {
     image: {
@@ -7,7 +7,7 @@ const content_styles = {
 
         resizeMode: "contain",
     },
-    
+
     contain_image: {
         display: "flex",
 
@@ -21,7 +21,7 @@ const content_styles = {
     },
 }
 
-const style = Native.StyleSheet.create({
+const style = StyleSheet.create({
     ...content_styles
 })
 

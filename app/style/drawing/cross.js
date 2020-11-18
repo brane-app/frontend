@@ -1,4 +1,4 @@
-import Native from "react-native"
+import { StyleSheet } from "react-native"
 
 import colors from "../../values/colors"
 
@@ -34,7 +34,7 @@ const cross_things = {
 }
 
 
-const cross = Native.StyleSheet.create({
+const cross = StyleSheet.create({
     ...cross_things
 })
 

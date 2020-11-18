@@ -3,6 +3,7 @@ import {
     ScrollView,
     View,
 } from "react-native"
+
 import AutoHeightImage from "react-native-auto-height-image"
 
 import style_content from "../style/component/content"

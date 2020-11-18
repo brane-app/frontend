@@ -1,4 +1,4 @@
-import Native from "react-native";
+import { StyleSheet } from "react-native";
 
 import colors from "../values/colors"
 
@@ -41,7 +41,7 @@ const misc = {
     },
 }
 
-const generic = Native.StyleSheet.create({
+const generic = StyleSheet.create({
     ...things_iu,
     ...misc,
 })

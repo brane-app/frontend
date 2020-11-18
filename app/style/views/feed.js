@@ -1,10 +1,10 @@
-import Native from "react-native"
+import { StyleSheet } from "react-native"
 
 const feed_styles = {
     image_scroller: { },
 }
 
-const style = Native.StyleSheet.create({
+const style = StyleSheet.create({
     ...feed_styles,
 })
 
