@@ -1,34 +1,39 @@
 {
-    "displayName": "imonke",
-    "expo": {
-        "android": {
-            "adaptiveIcon": {
-                "backgroundColor": "#FFFFFF",
-                "foregroundImage": "./assets/adaptive-icon.png"
-            }
-        },
-        "assetBundlePatterns": [
-            "**/*"
-        ],
-        "icon": "./assets/icon.png",
-        "ios": {
-            "supportsTablet": true
-        },
-        "name": "imonke",
-        "orientation": "portrait",
-        "slug": "imonke",
-        "splash": {
-            "backgroundColor": "#ffffff",
-            "image": "./assets/splash.png",
-            "resizeMode": "contain"
-        },
-        "updates": {
-            "fallbackToCacheTimeout": 0
-        },
-        "version": "0.1.0",
-        "web": {
-            "favicon": "./assets/favicon.png"
-        }
+  "displayName": "imonke",
+  "expo": {
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./assets/adaptive-icon.png"
+      },
+      "package": "io.gastrodon.imonke"
     },
-    "name": "imonke"
+    "androidStatusBar": {
+        "translucent": false,
+        "backgroundColor": "#212121"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "icon": "./assets/icon.png",
+    "ios": {
+      "supportsTablet": true
+    },
+    "name": "imonke",
+    "orientation": "portrait",
+    "slug": "imonke",
+    "splash": {
+      "backgroundColor": "#ffffff",
+      "image": "./assets/splash.png",
+      "resizeMode": "contain"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "version": "0.1.0",
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  },
+  "name": "imonke"
 }
