@@ -53,7 +53,7 @@ class ValidInput extends React.Component {
 
     async on_change(value) {
         let valid, message
-        [ valid, message ] = this.validator(value)
+        [ valid, message ] = await this.validator(value)
         this.setState({ value, valid, message })
     }
 
@@ -225,13 +225,17 @@ class LoginView extends HeadedView {
                         returnKeyType = { "next" }
                         onSubmitEditing = { () => this.input_email.focus() }
                         ref = { (ref) => { this.input_nick = ref } }
-                        validator = { (it) => {
+                        validator = { async (it) => {
                             if (64 < it.length) {
-                                return [ false, "nick too long" ]
+                                return [ false, `${it} is too long (${it.length} > 64)` ]
                             }
 
                             if (it.length < 4) {
-                                return [ false, "nick too short" ]
+                                return [ false, `${it} is too short (${it.length} < 4)` ]
+                            }
+
+                            if ( !this.login && await this.client.nick_exists(it) ) {
+                                return [ false, `${it} is occupied` ]
                             }
 
                             return [ true, null ]
@@ -244,12 +248,16 @@ class LoginView extends HeadedView {
                     returnKeyType = { "next" }
                     onSubmitEditing = { () => this.input_password.focus() }
                     ref = { (ref) => { this.input_email = ref } }
-                    validator = { it => {
+                    validator = { async (it) => {
                         if (email_regex.test(it)) {
                             return [ true, null ]
                         }
 
-                        return [ false, "invalid email" ]
+                        if ( !this.login && await this.client.email_exists(it) ) {
+                            return [ false, `${it} is occupied` ]
+                        }
+
+                        return [ false, `${it} isn't valid` ]
                     } }/>
                 <ValidInput
                     name = { "password" }
@@ -259,9 +267,9 @@ class LoginView extends HeadedView {
                     returnKeyType = { "done" }
                     onSubmitEditing = { () => this.input_password.blur() }
                     ref = { (ref) => { this.input_password = ref } }
-                    validator = { it => {
+                    validator = { async (it) => {
                         if (it.length < 8) {
-                            return [ false, "password too short" ]
+                            return [ false, `password too short ${it.length} < 8` ]
                         }
 
                         return [ true, null ]
