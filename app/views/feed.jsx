@@ -81,7 +81,7 @@ class FeedView extends HeadedView {
             ))
         ]
 
-        this.head = await fetched[fetched.length - 1].id
+        this.head = fetched.length == 0 ? "" : await fetched[fetched.length - 1].id
         this.setState({
             buffer: [...this.buffer, ...fetched],
             drawable_buffer: drawable_buffer,
