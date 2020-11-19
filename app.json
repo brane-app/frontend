@@ -9,7 +9,6 @@
       "package": "io.gastrodon.imonke"
     },
     "androidStatusBar": {
-        "translucent": false,
         "backgroundColor": "#212121"
     },
     "assetBundlePatterns": [

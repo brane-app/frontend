@@ -215,7 +215,7 @@ class LoginView extends React.Component {
 
     render () {
         return (
-            <View style = {style.generic.view}>
+            <View style = {[ style.generic.view, style.login.view ]}>
                 {this.top}
                 {this.inputs}
                 {this.buttons}
