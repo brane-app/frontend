@@ -189,6 +189,10 @@ class LoginView extends HeadedView {
         return this.state.submit_disabled
     }
 
+    get header() {
+        return null
+    }
+
     get top() {
         return (
             <View style = { style.login.top_contain }>
