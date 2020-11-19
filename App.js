@@ -1,9 +1,8 @@
 import React from "react"
-import App from "./app/root"
 import { AppRegistry, Text } from "react-native"
-import { name } from './app.json'
 
-console.log(App)
+import App from "./app/root"
+import { name } from './app.json'
 
 AppRegistry.registerComponent(name, () => App)
 
