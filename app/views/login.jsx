@@ -61,6 +61,7 @@ class ValidInput extends React.Component {
                 secureTextEntry = { this.props.secureTextEntry }
                 placeholderTextColor = { colors.gray_text_dark }
                 autoCapitalize = { "none" }
+                autoCorrect = { false }
                 blurOnSubmit = { false }
                 clearButtonMode = { "while-editing" }
                 textAlign = { "center" }/>
@@ -186,7 +187,7 @@ class LoginView extends HeadedView {
                     this.login ? null : <ValidInput
                         name = { "nick" }
                         key = { "nick" }
-                        autoCompleteType = { "username" }
+                        autoCompleteType = { "off" }
                         returnKeyType = { "next" }
                         onSubmitEditing = { () => this.input_email.focus() }
                         ref = { (ref) => { this.input_nick = ref } }
