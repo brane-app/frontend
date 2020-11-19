@@ -22,7 +22,7 @@ const email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
 class ValidInput extends React.Component {
     constructor(opts) {
         super(opts)
-        this.state = { value: "", valid: true }
+        this.state = { value: "", valid: true, message: null }
         this.validator = this.props.validator || (() => true)
         this.input = null
     }
@@ -32,7 +32,15 @@ class ValidInput extends React.Component {
     }
 
     get valid() {
-        return this.state.valid
+        return this.state.valid || this.value == ""
+    }
+
+    get message() {
+        return this.state.message
+    }
+
+    get style() {
+        return { borderColor: this.valid ? colors.blue : colors.red }
     }
 
     async blur() {
@@ -53,7 +61,7 @@ class ValidInput extends React.Component {
             <TextInput
                 ref = { (ref) => { this.input = ref } }
                 onChangeText = { (it) => { this.on_change(it) } }
-                style = {[ style.generic.text_field_ui, style.login.input, this.props.style ]}
+                style = {[ style.generic.text_field_ui, style.login.input, this.props.style, this.style ]}
                 autoCompleteType = { this.props.autoCompleteType }
                 onSubmitEditing = { this.props.onSubmitEditing }
                 placeholder = { this.props.name }

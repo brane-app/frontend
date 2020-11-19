@@ -7,6 +7,7 @@ const colors = {
     dark: dark,
     gray: "#43464d",
     blue: "#304FF3",
+    red: "#f3304a",
 
     gray_text_dark: "#888b94",
 }
