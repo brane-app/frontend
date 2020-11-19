@@ -35,6 +35,14 @@ class ValidInput extends React.Component {
         return this.state.valid
     }
 
+    async blur() {
+        this.input.blur()
+    }
+
+    async focus() {
+        this.input.focus()
+    }
+
     async on_change(value) {
         this.setState({ value, valid: this.validator(value) })
 
@@ -43,16 +51,18 @@ class ValidInput extends React.Component {
     render() {
         return (
             <TextInput
-                placeholder = { this.props.name }
-                placeholderTextColor = { colors.gray_text_dark }
                 ref = { (ref) => { this.input = ref } }
-                style = {[ style.generic.text_field_ui, style.login.input, this.props.style ]}
                 onChangeText = { (it) => { this.on_change(it) } }
-                secureTextEntry = { this.props.secureTextEntry }
+                style = {[ style.generic.text_field_ui, style.login.input, this.props.style ]}
                 autoCompleteType = { this.props.autoCompleteType }
+                onSubmitEditing = { this.props.onSubmitEditing }
+                placeholder = { this.props.name }
+                secureTextEntry = { this.props.secureTextEntry }
+                placeholderTextColor = { colors.gray_text_dark }
+                autoCapitalize = { "none" }
+                blurOnSubmit = { false }
                 clearButtonMode = { "while-editing" }
-                textAlign = { "center" }
-                autoCapitalize = { "none" }/>
+                textAlign = { "center" }/>
         )
     }
 }
@@ -176,6 +186,7 @@ class LoginView extends HeadedView {
                         name = { "nick" }
                         key = { "nick" }
                         autoCompleteType = { "username" }
+                        onSubmitEditing = { () => this.input_email.focus() }
                         ref = { (ref) => { this.input_nick = ref } }
                         validator = { it => 64 >= it.length && it.length >= 4 }/>
                 }
@@ -183,6 +194,7 @@ class LoginView extends HeadedView {
                     name = { "email" }
                     key = { "email" }
                     autoCompleteType = { "email" }
+                    onSubmitEditing = { () => this.input_password.focus() }
                     ref = { (ref) => { this.input_email = ref } }
                     validator = { it => email_regex.test(it) }/>
                 <ValidInput
@@ -190,6 +202,7 @@ class LoginView extends HeadedView {
                     key = { "password" }
                     secureTextEntry = { true }
                     autoCompleteType = { "password" }
+                    onSubmitEditing = { () => this.input_password.blur() }
                     ref = { (ref) => { this.input_password = ref } }
                     validator = { it => it.length >= 8 }/>
             </View>
