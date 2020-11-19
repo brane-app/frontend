@@ -57,6 +57,7 @@ class ValidInput extends React.Component {
                 autoCompleteType = { this.props.autoCompleteType }
                 onSubmitEditing = { this.props.onSubmitEditing }
                 placeholder = { this.props.name }
+                returnKeyType = { this.props.returnKeyType }
                 secureTextEntry = { this.props.secureTextEntry }
                 placeholderTextColor = { colors.gray_text_dark }
                 autoCapitalize = { "none" }
@@ -186,6 +187,7 @@ class LoginView extends HeadedView {
                         name = { "nick" }
                         key = { "nick" }
                         autoCompleteType = { "username" }
+                        returnKeyType = { "next" }
                         onSubmitEditing = { () => this.input_email.focus() }
                         ref = { (ref) => { this.input_nick = ref } }
                         validator = { it => 64 >= it.length && it.length >= 4 }/>
@@ -194,6 +196,7 @@ class LoginView extends HeadedView {
                     name = { "email" }
                     key = { "email" }
                     autoCompleteType = { "email" }
+                    returnKeyType = { "next" }
                     onSubmitEditing = { () => this.input_password.focus() }
                     ref = { (ref) => { this.input_email = ref } }
                     validator = { it => email_regex.test(it) }/>
@@ -202,6 +205,7 @@ class LoginView extends HeadedView {
                     key = { "password" }
                     secureTextEntry = { true }
                     autoCompleteType = { "password" }
+                    returnKeyType = { "done" }
                     onSubmitEditing = { () => this.input_password.blur() }
                     ref = { (ref) => { this.input_password = ref } }
                     validator = { it => it.length >= 8 }/>
