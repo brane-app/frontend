@@ -1,3 +1,4 @@
+import { Client } from "imonke"
 import React from "react"
 import {
     Text,
@@ -7,218 +8,221 @@ import {
     View,
 } from "react-native"
 
-import imonke from "imonke"
-
-import style_generic from "../style/generic"
-import style_login from "../style/views/login"
+import HeadedView from "../components/headed_view"
 import global_state from "../state"
+import colors from "../values/colors"
 
 const style = {
-    generic: style_generic,
-    login: style_login,
+    generic: require("../style/generic").default,
+    login: require("../style/views/login").default
 }
 
-class ValidInput {
-    constructor (opts) {
-        this._value = ""
+const email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-        this.title = opts.title || ""
-        this.validator = opts.validator || (_ => true)
-    }
-
-    get value () {
-        return this._value
-    }
-
-    get valid () {
-        return this.validator(this.value)
-    }
-
-    get widget() {
-        return (
-            <TextInput
-                style = {[style.login.input, style.generic.text_field_ui]}
-                onChangeText = {it => this._value = it}
-                key = {this.title}/>
-        )
-    }
-}
-
-class ValidPassword extends ValidInput {
-    get widget() {
-        return (
-            <TextInput
-                style = {[style.login.input, style.generic.text_field_ui]}
-                onChangeText = {it => this._value = it}
-                secureTextEntry = {true}
-                key = {this.title}/>
-        )
-    }
-}
-
-class LoginView extends React.Component {
-    constructor (opts) {
+class ValidInput extends React.Component {
+    constructor(opts) {
         super(opts)
-        this.state = {login: false}
-
-        this.login_inputs = new Map([
-            ["email", new ValidInput({title: "email"})],
-            ["password", new ValidPassword({title: "password"})],
-        ])
-
-        this.register_inputs = new Map([
-            ["nick", new ValidInput({title: "nick", "validator": it => it.length > 3})],
-            ["email", new ValidInput({title: "email"})],
-            ["password", new ValidPassword({title: "password"})],
-        ])
+        this.state = { value: "", valid: true }
+        this.validator = this.props.validator || (() => true)
+        this.input = null
     }
 
-    async submit_register() {
-        for (let it of this.register_inputs.entries()) {
-            if (!it[1].valid) {
-                ToastAndroid.show(`Invalid ${it[0]}`, ToastAndroid.SHORT)
-            }
-        }
+    get value() {
+        return this.state.value
+    }
 
-        let values = Object.fromEntries(
-            Array.from(this.register_inputs.entries(), it => [it[0], it[1].value])
+    get valid() {
+        return this.state.valid
+    }
+
+    async on_change(value) {
+        this.setState({ value, valid: this.validator(value) })
+
+    }
+
+    render() {
+        return (
+            <TextInput
+                placeholder = { this.props.name }
+                placeholderTextColor = { colors.gray_text_dark }
+                ref = { (ref) => { this.input = ref } }
+                style = {[ style.generic.text_field_ui, style.login.input, this.props.style ]}
+                onChangeText = { (it) => { this.on_change(it) } }
+                secureTextEntry = { this.props.secureTextEntry }
+                autoCompleteType = { this.props.autoCompleteType }
+                clearButtonMode = { "while-editing" }
+                textAlign = { "center" }
+                autoCapitalize = { "none" }/>
         )
+    }
+}
 
-        let ok = false
-        let client = new imonke.Client()
+class LoginView extends HeadedView {
+    constructor(opts = {}) {
+        super(opts)
+        this.state = { ...this.state, login: false, submit_disabled: false }
 
-        try {
-            ok = await client.create({
-                nick: values.nick,
-                email: values.email,
-                password: values.password,
-            })
-        } catch (err) {
-            ToastAndroid.show(err, ToastAndroid.SHORT)
-            return
-        }
+        this.client = new Client()
+        this.input_nick = null
+        this.input_email = null
+        this.input_password = null
+    }
 
-        if (!ok) {
-            ToastAndroid.show("Could not register", ToastAndroid.SHORT)
-            return
-        }
+    async display(message) {
+        // TODO: make iOS compatible
+        ToastAndroid.show(message, ToastAndroid.SHORT)
+    }
 
-        global_state.client = client
-        this.props.navigation.replace("profile")
+    async valid(fields) {
+        return fields
+            .map(it => this[`input_${it}`])
+            .every(it => it.valid && it.value.length != 0)
+    }
+
+    async entries(fields) {
+        return Object.fromEntries(
+            fields.map(it => [ it, this[`input_${it}`].value ])
+        )
     }
 
     async submit_login() {
-        for (let it of this.login_inputs.entries()) {
-            if (!it[1].valid) {
-                ToastAndroid.show(`Invalid ${it[0]}`, ToastAndroid.SHORT)
-                return
-            }
+        const fields = [ "email", "password" ]
+        if (!await this.valid(fields)) {
+            return
         }
-
-        let values = Object.fromEntries(
-            Array.from(this.login_inputs.entries(), it => [it[0], it[1].value])
-        )
-
-        let ok = false
-        let client = new imonke.Client({
-            email: values.email,
-        })
 
         try {
-            ok = await client.login({
-                password: values.password,
-            })
-        } catch (err) {
-            // user facing errors because I DON'T CARE
-            // IF YOU HAVE A BUG JUST FIX IT YOURSELF IT'S OPEN SOURCE
-            // I am not a frontend developer
-            ToastAndroid.show(err, ToastAndroid.SHORT)
+            if ( await this.client.login(await this.entries(fields)) ) {
+                return true
+            } else {
+                this.display("bad credentials")
+            }
+        } catch(err) {
+            this.display(err)
+        }
+
+        return false
+    }
+
+    async submit_register() {
+        const fields = [ "nick", "email", "password" ]
+        if (!await this.valid(fields)) {
             return
         }
 
-        if (!ok) {
-            ToastAndroid.show("Bad credentials", ToastAndroid.SHORT)
-            return
+        try {
+            if( await this.client.create(await this.entries(fields)) ) {
+                return true
+            } else {
+                this.display("failed")
+            }
+        } catch(err) {
+            this.display(err)
         }
-
-        global_state.client = client
-        this.props.navigation.replace("profile")
     }
 
     async submit() {
-        this.state.login ? await this.submit_login() : await this.submit_register()
-    }
+        this.setState(
+            { submit_disabled: true },
+            async () => {
+                if (this.state.login ? await this.submit_login() : await this.submit_register()) {
+                    global_state.client = this.client
+                    this.props.navigation.replace("profile")
+                }
 
-    button_text(value) {
-        return (
-            <Text
-            style = {[style.login.button_text, style.generic.text_ui]}>
-                {value}
-            </Text>
+                this.setState({ submit_disabled: false })
+            }
         )
     }
 
-    get login () {
+    get name() {
+        return "login"
+    }
+
+    get login() {
         return this.state.login
     }
 
-    set login(value) {
-        this.setState({login: value})
-    }
-
-    get inputs() {
-        let fields = this.login ? this.login_inputs : this.register_inputs
-
-        return (
-            <View
-            style = {style.login.input_contain}>
-                {Array.from(fields.values(), (value) => value.widget)}
-            </View>
-        )
+    get submit_disabled() {
+        return this.state.submit_disabled
     }
 
     get top() {
         return (
-            <View
-            style = {style.login.top_contain}>
+            <View style = { style.login.top_contain }>
                 <TouchableOpacity
-                    onPress = {() => this.login = false}
+                    onPress = { () => this.setState({ login: false }) }
                     style = {[style.login.top_switcher, this.login ? {} : style.login.top_switcher_underline]}>
-                    {this.button_text("register")}
+                    <Text style = {[ style.generic.text_ui, style.login.button_text ]}>
+                    {"register"}
+                    </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress = {() => this.login = true}
+                    onPress = { () => this.setState({ login: true }) }
                     style = {[style.login.top_switcher, this.login ? style.login.top_switcher_underline : {}]}>
-                    {this.button_text("login")}
+                    <Text style = {[ style.generic.text_ui, style.login.button_text ]}>
+                        {"login"}
+                    </Text>
                 </TouchableOpacity>
             </View>
         )
     }
 
-    get submit_button () {
+    get inputs() {
+        return (
+            <View style = { style.login.input_contain }>
+                {
+                    this.login ? null : <ValidInput
+                        name = { "nick" }
+                        key = { "nick" }
+                        autoCompleteType = { "username" }
+                        ref = { (ref) => { this.input_nick = ref } }
+                        validator = { it => 64 >= it.length && it.length >= 4 }/>
+                }
+                <ValidInput
+                    name = { "email" }
+                    key = { "email" }
+                    autoCompleteType = { "email" }
+                    ref = { (ref) => { this.input_email = ref } }
+                    validator = { it => email_regex.test(it) }/>
+                <ValidInput
+                    name = { "password" }
+                    key = { "password" }
+                    secureTextEntry = { true }
+                    autoCompleteType = { "password" }
+                    ref = { (ref) => { this.input_password = ref } }
+                    validator = { it => it.length >= 8 }/>
+            </View>
+        )
+    }
+
+    get submit_button() {
         return (
             <TouchableOpacity
-            onPress = {() => {this.submit()}}
-            style = {style.generic.button_ui}>
-                {this.button_text("submit")}
+                disabled = { this.submit_disabled }
+                onPress = { () => { this.submit() } }
+                style = {[ style.generic.button_ui, { opacity: this.submit_disabled ? .2 : 1 }]}>
+                <Text style = {[ style.login.button_text, style.generic.text_ui ]}>
+                    { "submit" }
+                </Text>
             </TouchableOpacity>
         )
     }
 
     get buttons() {
         return (
-            <View style = {style.login.button_contain}>
-                {this.submit_button}
+            <View style = { style.login.button_contain }>
+                { this.submit_button }
             </View>
         )
     }
 
-    render () {
+    get content() {
         return (
-            <View style = {[ style.generic.view, style.login.view ]}>
-                {this.top}
-                {this.inputs}
-                {this.buttons}
+            <View style = {[ style.generic.view ]}>
+                { this.top }
+                { this.inputs }
+                { this.buttons }
             </View>
         )
     }
