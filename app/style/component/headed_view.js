@@ -1,3 +1,4 @@
+import Constants from "expo-constants"
 import { StyleSheet } from "react-native"
 
 import colors from "../../values/colors"
@@ -7,6 +8,8 @@ const headed_view_things = {
     contain: {
         height: "100%",
         backgroundColor: colors.dark,
+
+        marginTop: Constants.statusBarHeight,
     },
 
     content_contain: {

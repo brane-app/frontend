@@ -1,3 +1,4 @@
+import Constants from "expo-constants"
 import { StyleSheet } from "react-native"
 
 import colors from "../../values/colors"
@@ -6,6 +7,12 @@ const container = {
     width: "80%",
     marginRight: "auto",
     marginLeft: "auto",
+}
+
+const view_styles = {
+    view: {
+        marginTop: Constants.statusBarHeight,
+    }
 }
 
 const top_styles = {
@@ -74,6 +81,7 @@ const button_styles = {
 }
 
 const style = StyleSheet.create({
+    ...view_styles,
     ...top_styles,
     ...input_styles,
     ...button_styles,
