@@ -177,10 +177,6 @@ class LoginView extends HeadedView {
         )
     }
 
-    get name() {
-        return "login"
-    }
-
     get login() {
         return this.state.login
     }
