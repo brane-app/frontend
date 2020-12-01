@@ -26,15 +26,23 @@ function rounded_pressable_disabled(event) {
     return { ...rounded_pressable(event), opacity: 0.7 }
 }
 
-const light_text = {
+const text_light = {
     color: colors.light,
     textAlign: "center",
 
     fontSize: 19,
 }
 
+const text_code_block = {
+    color: colors.text_code_block,
+    backgroundColor: colors.background_code_block,
+
+    fontSize: 8,
+}
+
 export default StyleSheet.create({
     rounded_pressable,
     rounded_pressable_disabled,
-    light_text,
+    text_light,
+    text_code_block,
 })
