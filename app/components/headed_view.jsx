@@ -113,11 +113,14 @@ class HeadedView extends React.Component {
         return (
             <>
             <NavButton
-                text = {"All"}
-                onPress = {this.navigate_to("feed_all")}/>
+                text = { "All" }
+                onPress = { this.navigate_to("feed_all") }/>
             <NavButton
-                text = {"Profile"}
-                onPress = {this.navigate_to("profile")}/>
+                text = { "Profile" }
+                onPress = { this.navigate_to("profile") }/>
+            <NavButton
+                text = { "Upload Content" }
+                onPress = { this.navigate_push("create") }/>
             </>
         )
     }
@@ -144,6 +147,13 @@ class HeadedView extends React.Component {
         return () => {
             this.modal_visible = false
             this.props.navigation.replace(where)
+        }
+    }
+
+    navigate_push(where) {
+        return () => {
+            this.modal_visible = false
+            this.props.navigation.push(where)
         }
     }
 
