@@ -1,6 +1,6 @@
 import React from "react"
 import {
-    Pressable,
+    TouchableOpacity,
     Text,
     TextInput,
     View,
@@ -9,6 +9,7 @@ import * as DocumentPicker from "expo-document-picker"
 import * as FileSystem from "expo-file-system"
 import HeadedView from "../components/headed_view"
 import state from "../state"
+import colors from "../values/colors"
 
 const style = {
     ui: require("../style/component/ui").default,
@@ -23,8 +24,9 @@ class CreateView extends HeadedView {
              nsfw: false,
              featurable: true,
              select_result: {},
-             draw_select_result: false,
-             submitting: true,
+             submitting: false,
+             submit_button_text: "submit",
+             submit_button_color: colors.blue,
          }
     }
 
@@ -32,12 +34,16 @@ class CreateView extends HeadedView {
         return this.state.select_result
     }
 
-    get draw_select_result() {
-        return this.state.draw_select_result
+    get submitting() {
+        return this.state.submitting
     }
 
-    get file_select_stream() {
+    get submit_button_text() {
+        return this.state.submit_button_text
+    }
 
+    get submit_button_color() {
+        return this.state.submit_button_color
     }
 
     get submittable() {
@@ -45,6 +51,7 @@ class CreateView extends HeadedView {
             this.select_result.uri,
             this.select_result.size,
             this.select_result.type === "success",
+            !this.submitting
         ].every(it => it)
     }
 
@@ -53,67 +60,92 @@ class CreateView extends HeadedView {
     }
 
     async submit_selected() {
-        console.log(new Blob([1]) == null);
-        if (!this.submittable) {
-            return
-        }
-
         const result = this.select_result
         const file_base64 = await FileSystem.readAsStringAsync(result.uri, { encoding: FileSystem.EncodingType.Base64 })
-        let uploaded = await state.client.upload_content_base64([], false, false, file_base64)
+        try {
+            await state.client.upload_content_base64([], false, false, file_base64)
+            return true
+        } catch (err) {
+            return false
+        }
+    }
+
+    async submit_selected_wrap() {
+        this.setState(
+            { submitting: true, submit_button_text: "submitting" },
+            async () => {
+                this.draw_upload_result(await this.submit_selected())
+                this.setState({ submitting: false })
+            }
+        )
+
+    }
+
+    async draw_upload_result(ok) {
+        this.setState(
+            {
+                submit_button_text: ok ? "submitted" : "failed",
+                submit_button_color: ok ? colors.green : colors.red,
+            }, () => {
+                setTimeout( () => { this.props.navigation.replace("feed_all") }, 3000 )
+            }
+        )
     }
 
     get file_select_button() {
         return (
-            <Pressable
+            <TouchableOpacity
+                disabled = { this.submitting }
                 onPress = { () => DocumentPicker.getDocumentAsync().then(it => this.setState({ select_result: it })) }
-                onLongPress = { () => this.setState({ draw_select_result: !this.draw_select_result }) }
                 style = { style.ui.rounded_pressable }>
                 <Text style = { style.ui.text_light }>
                     { "browse" }
                 </Text>
-            </Pressable>
+            </TouchableOpacity>
         )
     }
 
     get file_select_info_text() {
-        if (!this.select_result.type === "success") {
+        if (this.select_result.type !== "success") {
             return "nothing selected"
         }
 
-        return "something"
-    }
-
-    get file_select_info() {
-        return (
-            <Text>
-                { this.draw_select_result ? this.file_select_info_text : null }
-            </Text>
-        )
+        return this.select_result.name
     }
 
     get file_select() {
         return (
             <View>
                 { this.file_select_button }
-                { this.file_select_info }
             </View>
         )
     }
 
     get submit_button() {
         return (
-            <Pressable
-                onPress = { () => this.submit_selected() }
-                style = {
-                    this.submittable ?
-                    style.ui.rounded_pressable :
-                    style.ui.rounded_pressable_disabled
-                }>
+            <TouchableOpacity
+                disabled = { !this.submittable }
+                onPress = { () => this.submit_selected_wrap() }
+                style = {[
+                    style.ui.rounded_pressable,
+                    { opacity: this.submittable ? 1 : 0.7 },
+                    { backgroundColor: this.submit_button_color }
+                ]}>
                 <Text style = { style.ui.text_light }>
-                    { "upload" }
+                    { this.submit_button_text }
                 </Text>
-            </Pressable>
+            </TouchableOpacity>
+        )
+    }
+
+    get meta_fields() {
+        return (
+            <View>
+                <Text
+                    style = { { ...style.ui.text_light, ...style.ui.text_small } }>
+                    { this.file_select_info_text }
+                </Text>
+            </View>
         )
     }
 
@@ -121,10 +153,6 @@ class CreateView extends HeadedView {
         return <TextInput
                     multiline = { true }
                     style = { style.create.tags_text_input }/>
-    }
-
-    get meta_fields() {
-        return null
     }
 
     get content() {
