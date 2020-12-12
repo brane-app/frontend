@@ -18,7 +18,8 @@ const style = {
     login: require("../style/views/login").default
 }
 
-const email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const nick_regex = /^[A-Za-z0-9.\-_]+$/
+const email_regex = /^[^@]+@[^@]+$/
 
 class LoginView extends HeadedView {
     constructor(opts = {}) {
@@ -147,7 +148,11 @@ class LoginView extends HeadedView {
                         onSubmitEditing = { () => this.input_email.focus() }
                         style = {[  style.generic.text_field_ui, style.login.input ]}
                         validator = { async (it) => {
-                            if (64 < it.length) {
+                            if (!nick_regex.test(it)) {
+                                return [ false, `${it} is invalid` ]
+                            }
+
+                            if (16 < it.length) {
                                 return [ false, `${it} is too long (${it.length} > 64)` ]
                             }
 
@@ -171,15 +176,15 @@ class LoginView extends HeadedView {
                     onSubmitEditing = { () => this.input_password.focus() }
                     style = {[  style.generic.text_field_ui, style.login.input ]}
                     validator = { async (it) => {
-                        if (email_regex.test(it)) {
-                            return [ true, null ]
+                        if (!email_regex.test(it)) {
+                            return [ false, `${it} isn't valid` ]
                         }
 
                         if ( !this.login && await this.client.email_exists(it) ) {
                             return [ false, `${it} is occupied` ]
                         }
 
-                        return [ false, `${it} isn't valid` ]
+                        return [ true, null ]
                     } }/>
                 <ValidInput
                     ref = { (ref) => { this.input_password = ref } }
