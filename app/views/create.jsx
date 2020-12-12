@@ -92,11 +92,15 @@ class CreateView extends HeadedView {
         )
     }
 
+    async get_document() {
+        DocumentPicker.getDocumentAsync().then(it => this.setState({ select_result: it }))
+    }
+
     get file_select_button() {
         return (
             <TouchableOpacity
                 disabled = { this.submitting }
-                onPress = { () => DocumentPicker.getDocumentAsync().then(it => this.setState({ select_result: it })) }
+                onPress = { () => this.get_document() }
                 style = { style.ui.rounded_pressable }>
                 <Text style = { style.ui.text_light }>
                     { "browse" }
