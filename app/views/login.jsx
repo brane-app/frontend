@@ -3,12 +3,12 @@ import React from "react"
 import {
     Text,
     TextInput,
-    ToastAndroid,
     TouchableOpacity,
     View,
 } from "react-native"
 
 import HeadedView from "../components/headed_view"
+import TalkingButton from "../components/talking_button"
 import ValidInput from "../components/valid_input"
 import global_state from "../state"
 import colors from "../values/colors"
@@ -29,11 +29,19 @@ class LoginView extends HeadedView {
         this.input_nick = null
         this.input_email = null
         this.input_password = null
+        this.submit_button_ref = null
     }
 
     async display(message) {
-        // TODO: make iOS compatible
-        ToastAndroid.show(message, ToastAndroid.SHORT)
+        this.submit_button_ref.set_say_color(message, colors.red, { time: 2000 })
+    }
+
+    async display_err(err) {
+        if (err.response && err.response.data && err.response.data.error) {
+            this.display(err.response.data.error)
+        } else {
+            this.display("network error")
+        }
     }
 
     async valid(fields) {
@@ -61,7 +69,7 @@ class LoginView extends HeadedView {
                 this.display("bad credentials")
             }
         } catch(err) {
-            this.display(err)
+            this.display_err(err)
         }
 
         return false
@@ -77,10 +85,10 @@ class LoginView extends HeadedView {
             if( await this.client.create(await this.entries(fields)) ) {
                 return true
             } else {
-                this.display("failed")
+                this.display(`failed to ${this.login ? "login" : "register"}`)
             }
         } catch(err) {
-            this.display(err)
+            display_err(err)
         }
     }
 
@@ -88,7 +96,7 @@ class LoginView extends HeadedView {
         this.setState(
             { submit_disabled: true },
             async () => {
-                if (this.state.login ? await this.submit_login() : await this.submit_register()) {
+                if (this.login ? await this.submit_login() : await this.submit_register()) {
                     global_state.client = this.client
                     this.props.navigation.replace("profile")
                 }
@@ -200,14 +208,14 @@ class LoginView extends HeadedView {
 
     get submit_button() {
         return (
-            <TouchableOpacity
+            <TalkingButton
+                ref = { ref => this.submit_button_ref = ref }
                 disabled = { this.submit_disabled }
                 onPress = { () => { this.submit() } }
-                style = {[ style.generic.button_ui, { opacity: this.submit_disabled ? .2 : 1 }]}>
-                <Text style = {[ style.login.button_text, style.generic.text_ui ]}>
-                    { "submit" }
-                </Text>
-            </TouchableOpacity>
+                style = {[ style.generic.button_ui, { opacity: this.submit_disabled ? .2 : 1 }]}
+                textStyle = {[ style.login.button_text, style.generic.text_ui]}>
+                { "submit" }
+            </TalkingButton>
         )
     }
 
