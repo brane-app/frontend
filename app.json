@@ -9,14 +9,15 @@
       "package": "io.gastrodon.imonke"
     },
     "androidStatusBar": {
-        "backgroundColor": "#212121"
+      "backgroundColor": "#212121"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "icon": "./assets/icon.png",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "io.gastrodon.imonke"
     },
     "name": "imonke",
     "orientation": "portrait",
