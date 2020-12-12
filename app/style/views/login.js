@@ -63,14 +63,6 @@ const input_styles = {
 
         width: "100%",
         height: 48,
-    },
-
-    message: {
-        color: colors.red,
-
-        textAlign: "center",
-
-        width: "100%",
     }
 }
 

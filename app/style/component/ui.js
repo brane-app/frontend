@@ -31,7 +31,17 @@ const text_light = {
 }
 
 const text_small = {
-    fontSize: 10,
+    fontSize: 11,
+}
+
+const text_validator_message = {
+    color: colors.red,
+
+    textAlign: "center",
+
+    width: "100%",
+
+    ...text_small,
 }
 
 const text_code_block = {
@@ -42,9 +52,10 @@ const text_code_block = {
 }
 
 export default StyleSheet.create({
-    rounded_pressable,
     rounded_pressable_disabled,
+    rounded_pressable,
+    text_code_block,
     text_light,
     text_small,
-    text_code_block,
+    text_validator_message,
 })

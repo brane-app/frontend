@@ -9,6 +9,7 @@ import {
 } from "react-native"
 
 import HeadedView from "../components/headed_view"
+import ValidInput from "../components/valid_input"
 import global_state from "../state"
 import colors from "../values/colors"
 
@@ -18,86 +19,6 @@ const style = {
 }
 
 const email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-
-class ValidInput extends React.Component {
-    constructor(opts) {
-        super(opts)
-        this.state = { value: "", valid: true, message: null }
-        this.validator = this.props.validator || (() => true)
-        this.input_ref = null
-    }
-
-    get value() {
-        return this.state.value
-    }
-
-    get valid() {
-        return this.state.valid || this.value == ""
-    }
-
-    get message() {
-        return this.state.message
-    }
-
-    get style() {
-        return { borderColor: this.valid ? colors.blue : colors.red }
-    }
-
-    async blur() {
-        this.input_ref.blur()
-    }
-
-    async focus() {
-        this.input_ref.focus()
-    }
-
-    async on_change(value) {
-        let valid, message
-        [ valid, message ] = await this.validator(value)
-        this.setState({ value, valid, message })
-    }
-
-    get input() {
-        return (
-            <TextInput
-            ref = { (ref) => { this.input_ref = ref } }
-            onChangeText = { (it) => { this.on_change(it) } }
-            style = {[ style.generic.text_field_ui, style.login.input, this.props.style, this.style ]}
-            autoCompleteType = { this.props.autoCompleteType }
-            onSubmitEditing = { this.props.onSubmitEditing }
-            placeholder = { this.props.name }
-            returnKeyType = { this.props.returnKeyType }
-            secureTextEntry = { this.props.secureTextEntry }
-            placeholderTextColor = { colors.gray_text_dark }
-            autoCapitalize = { "none" }
-            autoCorrect = { false }
-            blurOnSubmit = { false }
-            clearButtonMode = { "while-editing" }
-            textAlign = { "center" }/>
-        )
-    }
-
-    get message_display() {
-        if (!this.message || this.value == "") {
-            return null
-        }
-
-        return (
-            <Text style = {[ style.login.message ]}>
-                { this.message }
-            </Text>
-        )
-    }
-
-    render() {
-        return (
-            <View>
-                { this.input }
-                { this.message_display }
-            </View>
-        )
-    }
-}
 
 class LoginView extends HeadedView {
     constructor(opts = {}) {
@@ -215,12 +136,13 @@ class LoginView extends HeadedView {
             <View style = { style.login.input_contain }>
                 {
                     this.login ? null : <ValidInput
+                        ref = { (ref) => { this.input_nick = ref } }
                         name = { "nick" }
                         key = { "nick" }
                         autoCompleteType = { "off" }
                         returnKeyType = { "next" }
                         onSubmitEditing = { () => this.input_email.focus() }
-                        ref = { (ref) => { this.input_nick = ref } }
+                        style = {[  style.generic.text_field_ui, style.login.input ]}
                         validator = { async (it) => {
                             if (64 < it.length) {
                                 return [ false, `${it} is too long (${it.length} > 64)` ]
@@ -238,12 +160,13 @@ class LoginView extends HeadedView {
                         } }/>
                 }
                 <ValidInput
+                    ref = { (ref) => { this.input_email = ref } }
                     name = { "email" }
                     key = { "email" }
                     autoCompleteType = { "email" }
                     returnKeyType = { "next" }
                     onSubmitEditing = { () => this.input_password.focus() }
-                    ref = { (ref) => { this.input_email = ref } }
+                    style = {[  style.generic.text_field_ui, style.login.input ]}
                     validator = { async (it) => {
                         if (email_regex.test(it)) {
                             return [ true, null ]
@@ -256,13 +179,14 @@ class LoginView extends HeadedView {
                         return [ false, `${it} isn't valid` ]
                     } }/>
                 <ValidInput
+                    ref = { (ref) => { this.input_password = ref } }
                     name = { "password" }
                     key = { "password" }
                     secureTextEntry = { true }
                     autoCompleteType = { "password" }
                     returnKeyType = { "done" }
                     onSubmitEditing = { () => this.input_password.blur() }
-                    ref = { (ref) => { this.input_password = ref } }
+                    style = {[  style.generic.text_field_ui, style.login.input ]}
                     validator = { async (it) => {
                         if (it.length < 8) {
                             return [ false, `password too short ${it.length} < 8` ]
