@@ -62,14 +62,10 @@ class LoginView extends HeadedView {
             return
         }
 
-        try {
-            if ( await this.client.login(await this.entries(fields)) ) {
-                return true
-            } else {
-                this.display("bad credentials")
-            }
-        } catch(err) {
-            this.display_err(err)
+        if ( await this.client.login(await this.entries(fields)) ) {
+            return true
+        } else {
+            this.display("bad credentials")
         }
 
         return false
@@ -81,14 +77,8 @@ class LoginView extends HeadedView {
             return
         }
 
-        try {
-            if( await this.client.create(await this.entries(fields)) ) {
-                return true
-            } else {
-                this.display(`failed to ${this.login ? "login" : "register"}`)
-            }
-        } catch(err) {
-            display_err(err)
+        if( await this.client.create(await this.entries(fields)) ) {
+            return true
         }
     }
 
@@ -96,12 +86,17 @@ class LoginView extends HeadedView {
         this.setState(
             { submit_disabled: true },
             async () => {
-                if (this.login ? await this.submit_login() : await this.submit_register()) {
-                    global_state.client = this.client
-                    this.props.navigation.replace("profile")
+                try {
+                    if (this.login ? await this.submit_login() : await this.submit_register()) {
+                        global_state.client = this.client
+                        this.props.navigation.replace("profile")
+                    }
+                } catch (err) {
+                    this.display(`failed to ${this.login ? "login" : "register"}`)
+                } finally {
+                    this.setState({ submit_disabled: false })
                 }
 
-                this.setState({ submit_disabled: false })
             }
         )
     }
