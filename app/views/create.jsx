@@ -8,6 +8,7 @@ import {
 import * as DocumentPicker from "expo-document-picker"
 import * as FileSystem from "expo-file-system"
 import HeadedView from "../components/headed_view"
+import TalkingButton from "../components/talking_button"
 import state from "../state"
 import colors from "../values/colors"
 
@@ -28,6 +29,8 @@ class CreateView extends HeadedView {
              submit_button_text: "submit",
              submit_button_color: colors.blue,
          }
+
+         this.submit_button_ref = null
     }
 
     get select_result() {
@@ -70,25 +73,31 @@ class CreateView extends HeadedView {
         }
     }
 
-    async submit_selected_wrap() {
-        this.setState(
-            { submitting: true, submit_button_text: "submitting" },
-            async () => {
-                this.draw_upload_result(await this.submit_selected())
-                this.setState({ submitting: false })
-            }
-        )
-
+    async submit_result_closure(result) {
+        const text = result ? "submitted" : "failed"
+        const color = result ? colors.green : colors.red
+        return () => {
+            this.submit_button_ref.set_say_color(
+                text,
+                color,
+                {
+                    time: 500,
+                    callback: () => this.props.navigation.replace("feed_all"),
+                }
+            )
+        }
     }
 
-    async draw_upload_result(ok) {
-        this.setState(
+    async submit_selected_wrap() {
+        this.submit_button_ref.set_say(
+            "submitting",
             {
-                submit_button_text: ok ? "submitted" : "failed",
-                submit_button_color: ok ? colors.green : colors.red,
-            }, () => {
-                setTimeout( () => { this.props.navigation.replace("feed_all") }, 3000 )
-            }
+                 callback: () => {
+                    this.submit_selected().then(
+                        async ok => (await this.submit_result_closure(ok))()
+                    )
+                }
+            },
         )
     }
 
@@ -127,18 +136,14 @@ class CreateView extends HeadedView {
 
     get submit_button() {
         return (
-            <TouchableOpacity
+            <TalkingButton
+                ref = { ref => this.submit_button_ref = ref }
                 disabled = { !this.submittable }
                 onPress = { () => this.submit_selected_wrap() }
-                style = {[
-                    style.ui.rounded_pressable,
-                    { opacity: this.submittable ? 1 : 0.7 },
-                    { backgroundColor: this.submit_button_color }
-                ]}>
-                <Text style = { style.ui.text_light }>
-                    { this.submit_button_text }
-                </Text>
-            </TouchableOpacity>
+                style = { style.ui.rounded_pressable }
+                textStyle = { style.ui.text_light }>
+                { "submit" }
+            </TalkingButton>
         )
     }
 
