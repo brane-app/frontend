@@ -3,91 +3,86 @@ import { StyleSheet } from "react-native"
 
 import colors from "../../values/colors"
 
+const view = {
+    marginTop: Constants.statusBarHeight,
+}
+
+const top_contain = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+
+    height: "20%",
+    maxHeight: 58,
+
+    ...container,
+}
+
+const top_switcher = {
+    display: "flex",
+
+    height: "100%",
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+
+    marginRight: "auto",
+    marginLeft: "auto",
+
+    justifyContent: "center",
+}
+
+const top_switcher_underline = {
+    marginBottom: -2,
+
+    borderBottomColor: colors.blue,
+    borderBottomWidth: 2,
+}
+
 const container = {
     width: "80%",
     marginRight: "auto",
     marginLeft: "auto",
 }
 
-const view_styles = {
-    view: {
-        marginTop: Constants.statusBarHeight,
-    }
+const input_contain = {
+    display: "flex",
+    justifyContent: "center",
+
+    height: "70%",
+    ...container,
 }
 
-const top_styles = {
-    top_contain: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-evenly",
+const input = {
+    flexGrow: 0,
 
-        height: "20%",
-        maxHeight: 58,
+    marginTop: 12,
+    marginBottom: 12,
 
-        ...container,
-    },
-
-    top_switcher: {
-        display: "flex",
-
-        height: "100%",
-        flexGrow: 1,
-        flexShrink: 1,
-        flexBasis: 0,
-
-        marginRight: "auto",
-        marginLeft: "auto",
-
-        justifyContent: "center",
-    },
-
-    top_switcher_underline: {
-        marginBottom: -2,
-
-        borderBottomColor: colors.blue,
-        borderBottomWidth: 2,
-    },
+    width: "100%",
+    height: 48,
 }
 
-const input_styles = {
-    input_contain: {
-        display: "flex",
-        justifyContent: "center",
-
-        height: "70%",
-        ...container,
-    },
-
-    input: {
-        flexGrow: 0,
-
-        marginTop: 12,
-        marginBottom: 12,
-
-        width: "100%",
-        height: 48,
-    }
-}
-
-const button_styles = {
-    button_text: {
+const button_text = {
         textAlign: "center",
 
         width: "100%",
 
         color: "white",
-    },
+    }
 
-    button_gap: {
+const button_gap = {
         flexGrow: 1,
-    },
-}
+    }
 
-const style = StyleSheet.create({
-    ...view_styles,
-    ...top_styles,
-    ...input_styles,
-    ...button_styles,
+export default StyleSheet.create({
+    button_gap,
+    button_text,
+    continue_contain,
+    input_contain,
+    input,
+    top_contain,
+    top_switcher_underline,
+    top_switcher,
+    view,
 })
-
-export default style
