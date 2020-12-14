@@ -1,5 +1,5 @@
 {
-  "displayName": "imonke",
+  "displayName": "iMonke",
   "expo": {
     "android": {
       "adaptiveIcon": {
@@ -23,7 +23,7 @@
     "orientation": "portrait",
     "slug": "imonke",
     "splash": {
-      "backgroundColor": "#ffffff",
+      "backgroundColor": "#212121",
       "image": "./assets/splash.png",
       "resizeMode": "contain"
     },
