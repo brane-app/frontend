@@ -128,6 +128,16 @@ class LoginView extends HeadedView {
         )
     }
 
+    top_underline_if(submit_type) {
+        return submit_type == this.submit_type
+            ? style.login.top_switcher_underline
+            : {}
+    }
+
+    top_text(what) {
+        return <Text style = {[ style.generic.text_ui, style.login.button_text ]}> { what } </Text>
+    }
+
     get header() {
         return null
     }
@@ -137,18 +147,18 @@ class LoginView extends HeadedView {
             <View style = { style.login.top_contain }>
                 <TouchableOpacity
                     onPress = { () => this.setState({ submit_type: "register" }) }
-                    style = {[style.login.top_switcher, this.submit_type == "register" ? style.login.top_switcher_underline : {}]}>
-                    <Text style = {[ style.generic.text_ui, style.login.button_text ]}>
-                    {"register"}
-                    </Text>
+                    style = {[ style.login.top_switcher, this.top_underline_if("register") ]}>
+                    { this.top_text("register") }
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress = { () => this.setState({ submit_type: "login" }) }
-                    // TODO This is ugly
-                    style = {[style.login.top_switcher, this.submit_type == "login" ? style.login.top_switcher_underline : {} ]}>
-                    <Text style = {[ style.generic.text_ui, style.login.button_text ]}>
-                        {"login"}
-                    </Text>
+                    style = {[ style.login.top_switcher, this.top_underline_if("login") ]}>
+                    { this.top_text("login") }
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress = { () => this.setState({ submit_type: "continue" }) }
+                    style = {[ style.login.top_switcher, this.top_underline_if("continue") ]}>
+                    { this.top_text("continue") }
                 </TouchableOpacity>
             </View>
         )
@@ -271,7 +281,7 @@ class LoginView extends HeadedView {
     get buttons() {
         return (
             <View style = { style.login.button_contain }>
-                { this.submit_button }
+                { this.submit_type == "continue" ? null : this.submit_button }
             </View>
         )
     }

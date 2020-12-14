@@ -19,6 +19,7 @@ const top_styles = {
     top_contain: {
         display: "flex",
         flexDirection: "row",
+        justifyContent: "space-evenly",
 
         height: "20%",
         maxHeight: 58,
@@ -30,7 +31,9 @@ const top_styles = {
         display: "flex",
 
         height: "100%",
-        width: "40%",
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: 0,
 
         marginRight: "auto",
         marginLeft: "auto",
