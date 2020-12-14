@@ -134,8 +134,16 @@ class LoginView extends HeadedView {
             : {}
     }
 
-    top_text(what) {
-        return <Text style = {[ style.generic.text_ui, style.login.button_text ]}> { what } </Text>
+    top_switch(target) {
+        return (
+            <TouchableOpacity
+                onPress = { () => this.setState({ submit_type: target }) }
+                style = {[ style.login.top_switcher, this.top_underline_if(target) ]}>
+                <Text style = {[ style.generic.text_ui, style.login.button_text ]}>
+                    { target }
+                </Text>
+            </TouchableOpacity>
+        )
     }
 
     get header() {
@@ -145,21 +153,9 @@ class LoginView extends HeadedView {
     get top() {
         return (
             <View style = { style.login.top_contain }>
-                <TouchableOpacity
-                    onPress = { () => this.setState({ submit_type: "register" }) }
-                    style = {[ style.login.top_switcher, this.top_underline_if("register") ]}>
-                    { this.top_text("register") }
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress = { () => this.setState({ submit_type: "login" }) }
-                    style = {[ style.login.top_switcher, this.top_underline_if("login") ]}>
-                    { this.top_text("login") }
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress = { () => this.setState({ submit_type: "continue" }) }
-                    style = {[ style.login.top_switcher, this.top_underline_if("continue") ]}>
-                    { this.top_text("continue") }
-                </TouchableOpacity>
+                { this.top_switch("register") }
+                { this.top_switch("login") }
+                { this.top_switch("continue") }
             </View>
         )
     }
