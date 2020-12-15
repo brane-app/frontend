@@ -17,7 +17,7 @@ import global_state from "../state"
 import colors from "../values/colors"
 
 const style = {
-    continue: require("../style/component/continue_card").default,
+    altcard: require("../style/component/alt_card").default,
     generic: require("../style/generic").default,
     login: require("../style/views/login").default,
     ui: require("../style/component/ui").default,
@@ -26,7 +26,7 @@ const style = {
 const nick_regex = /^[A-Za-z0-9.\-_]+$/
 const email_regex = /^[^@]+@[^@]+$/
 
-class ContinueCard extends React.Component {
+class AltCard extends React.Component {
     constructor(opts = {}) {
         super()
         let data = opts.data || {}
@@ -62,12 +62,12 @@ class ContinueCard extends React.Component {
     }
 
     get image() {
-        return <Image style = {[ style.continue.image ]}/>
+        return <Image style = {[ style.altcard.image ]}/>
     }
 
     get text() {
         return (
-            <Text style = {[ style.continue.text ]}>
+            <Text style = {[ style.altcard.text ]}>
                 { this.email }
             </Text>
         )
@@ -77,7 +77,7 @@ class ContinueCard extends React.Component {
         return (
             <Pressable
                 { ...this.props }
-                style = {[ this.props.style, style.continue.card ]}
+                style = {[ this.props.style, style.altcard.card ]}
                 onPress = { event => this.on_press_data(event) }>
                 { this.image }
                 { this.text }
@@ -108,7 +108,7 @@ class LoginView extends HeadedView {
                 const data = JSON.parse(it) || {}
                 this.setState({
                     stored_profiles: data,
-                    submit_type: Object.values(data).length == 0 ? "register": "continue",
+                    submit_type: Object.values(data).length == 0 ? "register": "alts",
                 })
             }
         )
@@ -154,9 +154,9 @@ class LoginView extends HeadedView {
         )
     }
 
-    // continuing stuff
+    // alt login stuff
 
-    async set_continue_profile(data) {
+    async set_selected_profile(data) {
         if (data.email && data.secret && await this.client.login(data)) {
             this.navigate_after_auth()
             return
@@ -165,7 +165,7 @@ class LoginView extends HeadedView {
         this.setState({ selected_profile: data })
     }
 
-    async wipe_continue_profile(data) {
+    async wipe_selected_profile(data) {
         this.setState({ selected_profile: null })
     }
 
@@ -195,7 +195,7 @@ class LoginView extends HeadedView {
         return await this.client.create(await this.entries(fields))
     }
 
-    async submit_continue() {
+    async submit_alts() {
         const fields = [ "password" ]
         if (!await this.valid(fields)) {
             return false
@@ -224,8 +224,8 @@ class LoginView extends HeadedView {
             case "register":
                 result = await this.submit_register()
                 break
-            case "continue":
-                result = await this.submit_continue()
+            case "alts":
+                result = await this.submit_alts()
                 break
         }
 
@@ -294,7 +294,7 @@ class LoginView extends HeadedView {
             <View style = { style.login.top_contain }>
                 { this.top_switch("register") }
                 { this.top_switch("login") }
-                { Object.keys(this.stored_profiles).length == 0 ? null : this.top_switch("continue") }
+                { Object.keys(this.stored_profiles).length == 0 ? null : this.top_switch("alts") }
             </View>
         )
     }
@@ -396,10 +396,10 @@ class LoginView extends HeadedView {
             .values(this.stored_profiles)
             .sort((it, next) => { return it.time < next.time })
             .map( it => (
-                    <ContinueCard
+                    <AltCard
                         data = { it }
                         key = { it.email }
-                        onPress = { (_, data) => this.set_continue_profile(data) }
+                        onPress = { (_, data) => this.set_selected_profile(data) }
                         style = {[ style.generic.text_field_ui, style.login.input ]}/>
                 ) )
     }
@@ -407,23 +407,23 @@ class LoginView extends HeadedView {
     get selected_profile_card() {
         return (
             <>
-                <ContinueCard
+                <AltCard
                     ref = { ref => this.selected_profile_ref = ref }
                     data = { this.selected_profile }
                     key = { this.selected_profile.email }
-                    onPress = { _ => this.wipe_continue_profile() }
+                    onPress = { _ => this.wipe_selected_profile() }
                     style = {[ style.generic.text_field_ui, style.login.input ]}/>
                 { this.field_password }
             </>
         )
     }
 
-    get continue() {
+    get alts() {
         return this.selected_profile ? this.selected_profile_card : this.profiles
     }
 
     get submit_button() {
-        if (this.submit_type == "continue" && !this.selected_profile) {
+        if (this.submit_type == "alts" && !this.selected_profile) {
             return null
         }
 
@@ -452,7 +452,7 @@ class LoginView extends HeadedView {
             <View style = {[ style.generic.view ]}>
                 { this.top }
                 <View style = { style.login.input_contain }>
-                    { this.submit_type == "continue" ? this.continue : this.fields }
+                    { this.submit_type == "alts" ? this.alts : this.fields }
                 </View>
                 { this.buttons }
             </View>
