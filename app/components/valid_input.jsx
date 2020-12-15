@@ -48,8 +48,7 @@ class ValidInput extends React.Component {
     }
 
     async on_change(value) {
-        let valid, message
-        [ valid, message ] = await this.validator(value)
+        const [ valid, message ] = await this.validator(value)
         this.setState({ value, valid, message })
     }
 
