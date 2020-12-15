@@ -102,7 +102,7 @@ class CreateView extends HeadedView {
     }
 
     async get_document() {
-        DocumentPicker.getDocumentAsync().then(it => this.setState({ select_result: it }))
+        DocumentPicker.getDocumentAsync().then(it => this.set_state_safe({ select_result: it }))
     }
 
     get file_select_button() {

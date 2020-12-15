@@ -11,6 +11,19 @@ class TalkingButton extends React.Component {
             text: null,
             color: null,
         }
+        this.mounted = false
+    }
+
+    componentDidMount() {
+        this.mounted = true
+    }
+
+    componentWillUnmount() {
+        this.mounted = false
+    }
+
+    async set_state_safe(state, callback) {
+        this.mounted && this.setState(state, callback)
     }
 
     async clear(callback) {

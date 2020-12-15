@@ -106,7 +106,7 @@ class LoginView extends HeadedView {
         AsyncStorage.getItem("stored_profiles").then(
             it => {
                 const data = JSON.parse(it) || {}
-                this.setState({
+                this.set_state_safe({
                     stored_profiles: data,
                     submit_type: Object.values(data).length == 0 ? "register": "alts",
                 })
@@ -162,11 +162,11 @@ class LoginView extends HeadedView {
             return
         }
 
-        this.setState({ selected_profile: data })
+        this.set_state_safe({ selected_profile: data })
     }
 
     async wipe_selected_profile(data) {
-        this.setState({ selected_profile: null })
+        this.set_state_safe({ selected_profile: null })
     }
 
     // submitting stuff
@@ -250,7 +250,7 @@ class LoginView extends HeadedView {
     }
 
     async submit_wrapped() {
-        this.setState(
+        this.set_state_safe(
             { submit_disabled: true },
             async () => {
                 try {
@@ -261,7 +261,7 @@ class LoginView extends HeadedView {
                     console.log(err);
                     this.display(`error trying to ${this.submit_type}`)
                 } finally {
-                    this.setState({ submit_disabled: false })
+                    this.set_state_safe({ submit_disabled: false })
                 }
             }
         )
@@ -276,7 +276,7 @@ class LoginView extends HeadedView {
     top_switch(target) {
         return (
             <TouchableOpacity
-                onPress = { () => this.setState({ submit_type: target, selected_profile: null }) }
+                onPress = { () => this.set_state_safe({ submit_type: target, selected_profile: null }) }
                 style = {[ style.login.top_switcher, this.top_underline_if(target) ]}>
                 <Text style = {[ style.generic.text_ui, style.login.button_text ]}>
                     { target }

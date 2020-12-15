@@ -58,7 +58,7 @@ class FeedView extends HeadedView {
     }
 
     async reset() {
-        this.setState({ buffer: [], drawable_buffer: [] }, () => this.grow_buffer())
+        this.set_state_safe({ buffer: [], drawable_buffer: [] }, () => this.grow_buffer())
     }
 
     async grow_buffer() {
@@ -82,7 +82,7 @@ class FeedView extends HeadedView {
         ]
 
         this.head = fetched.length == 0 ? "" : await fetched[fetched.length - 1].id
-        this.setState({
+        this.set_state_safe({
             buffer: [...this.buffer, ...fetched],
             drawable_buffer: drawable_buffer,
         })
@@ -96,7 +96,7 @@ class FeedView extends HeadedView {
             return
         }
 
-        this.setState({
+        this.set_state_safe({
             ...this.state,
             screen_offset: offset,
             index: this.index + movement,
@@ -109,7 +109,7 @@ class FeedView extends HeadedView {
                 pagingEnabled
                 horizontal = {true}
                 style = {[style.feed.image_scroller]}
-                onLayout = { event => this.setState({ screen_width: event.nativeEvent.layout.width }) }
+                onLayout = { event => this.set_state_safe({ screen_width: event.nativeEvent.layout.width }) }
                 onScroll = { event => this.handle_scroll(event.nativeEvent.contentOffset.x) }>
                 {this.drawable_buffer}
             </ScrollView>

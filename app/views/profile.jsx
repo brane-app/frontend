@@ -169,7 +169,8 @@ class ProfileView extends HeadedView {
     }
 
     async componentDidMount() {
-        this.setState({
+        this.mounted = true
+        this.set_state_safe({
             name: await this.client.nick
         })
     }
