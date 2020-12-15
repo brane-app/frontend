@@ -1,9 +1,12 @@
 import { Client } from "imonke"
 import React from "react"
 import {
+    AsyncStorage,
+    Image,
     Text,
     TextInput,
     TouchableOpacity,
+    Pressable,
     View,
 } from "react-native"
 
@@ -14,22 +17,95 @@ import global_state from "../state"
 import colors from "../values/colors"
 
 const style = {
+    continue: require("../style/component/continue_card").default,
     generic: require("../style/generic").default,
-    login: require("../style/views/login").default
+    login: require("../style/views/login").default,
+    ui: require("../style/component/ui").default,
 }
 
 const nick_regex = /^[A-Za-z0-9.\-_]+$/
 const email_regex = /^[^@]+@[^@]+$/
 
+class ContinueCard extends React.Component {
+    constructor(opts = {}) {
+        super()
+        let data = opts.data || {}
+        if (!data.email && !data.nick) {
+            throw "Not enough data to lookup a profile"
+        }
+
+        this.state = { profile_data: opts.data }
+        this.input_ref = null
+    }
+
+    get profile_data() {
+        return this.state.profile_data
+    }
+
+    get email() {
+        return this.profile_data.email
+    }
+
+    get secret() {
+        return this.profile_data.secret
+    }
+
+    async recieve_ref(ref) {
+        this.input_ref = ref
+        if (ref) {
+            ref.focus()
+        }
+    }
+
+    async on_press_data(event) {
+        this.props.onPress(event, this.profile_data)
+    }
+
+    get image() {
+        return <Image style = {[ style.continue.image ]}/>
+    }
+
+    get text() {
+        return (
+            <Text style = {[ style.continue.text ]}>
+                { this.email }
+            </Text>
+        )
+    }
+
+    render() {
+        return (
+            <Pressable
+                { ...this.props }
+                style = {[ this.props.style, style.continue.card ]}
+                onPress = { event => this.on_press_data(event) }>
+                { this.image }
+                { this.text }
+            </Pressable>
+        )
+    }
+}
+
 class LoginView extends HeadedView {
     constructor(opts = {}) {
         super(opts)
-        this.state = { ...this.state, submit_type: "register", submit_disabled: false }
+        this.state = {
+            ...this.state,
+            submit_type: "register",
+            submit_disabled: false,
+            selected_profile: null,
+            stored_profiles: [],
+        }
         this.client = new Client()
         this.input_nick = null
         this.input_email = null
         this.input_password = null
         this.submit_button_ref = null
+        this.selected_profile_ref = null
+
+        AsyncStorage.getItem("stored_profiles").then(
+            it => this.setState({ stored_profiles: it || [] })
+        )
     }
 
     get submit_type() {
@@ -38,6 +114,20 @@ class LoginView extends HeadedView {
 
     get submit_disabled() {
         return this.state.submit_disabled
+    }
+
+    get selected_profile() {
+        return this.state.selected_profile
+    }
+
+    get stored_profiles() {
+        return this.state.stored_profiles
+    }
+
+    async valid(fields) {
+        return fields
+            .map(it => this[`input_${it}`])
+            .every(it => it != null && it.valid && it.value.length != 0)
     }
 
     async display(message) {
@@ -52,17 +142,23 @@ class LoginView extends HeadedView {
         }
     }
 
-    async valid(fields) {
-        return fields
-            .map(it => this[`input_${it}`])
-            .every(it => it.valid && it.value.length != 0)
-    }
-
     async entries(fields) {
         return Object.fromEntries(
             fields.map(it => [ it, this[`input_${it}`].value ])
         )
     }
+
+    // continuing stuff
+
+    async set_continue_profile(data) {
+        this.setState({ selected_profile: data })
+    }
+
+    async wipe_continue_profile(data) {
+        this.setState({ selected_profile: null })
+    }
+
+    // submitting stuff
 
     async submit_login() {
         const fields = [ "email", "password" ]
@@ -89,6 +185,22 @@ class LoginView extends HeadedView {
     }
 
     async submit_continue() {
+        const fields = [ "password" ]
+        if (!await this.valid(fields)) {
+            return false
+        }
+
+        const data = {
+            ...(await this.entries(fields)),
+            email: this.selected_profile.email,
+        }
+
+        if (await this.client.login(data)) {
+            return true
+        } else {
+            this.display("bad credentials")
+        }
+
         return false
     }
 
@@ -137,7 +249,7 @@ class LoginView extends HeadedView {
     top_switch(target) {
         return (
             <TouchableOpacity
-                onPress = { () => this.setState({ submit_type: target }) }
+                onPress = { () => this.setState({ submit_type: target, selected_profile: null }) }
                 style = {[ style.login.top_switcher, this.top_underline_if(target) ]}>
                 <Text style = {[ style.generic.text_ui, style.login.button_text ]}>
                     { target }
@@ -155,7 +267,7 @@ class LoginView extends HeadedView {
             <View style = { style.login.top_contain }>
                 { this.top_switch("register") }
                 { this.top_switch("login") }
-                { this.top_switch("continue") }
+                { this.stored_profiles.length == 0 ? null : this.top_switch("continue") }
             </View>
         )
     }
@@ -244,24 +356,49 @@ class LoginView extends HeadedView {
     }
 
     get fields() {
-        return (
-            <View style = { style.login.input_contain }>
-                { this.submit_type == "register" ? this.field_nick : null }
-                { this.field_email }
-                { this.field_password }
-            </View>
-        )
+        return [
+            this.submit_type == "register" ? this.field_nick : null,
+            this.field_email,
+            this.field_password,
+        ]
+
     }
 
     get profiles() {
-        return <View/>
+        return this.stored_profiles.map(
+            it => (
+                    <ContinueCard
+                        data = { it }
+                        key = { it.email }
+                        onPress = { (_, data) => this.set_continue_profile(data) }
+                        style = {[ style.generic.text_field_ui, style.login.input ]}/>
+                )
+            )
     }
 
-    get inputs() {
-        return this.submit_type == "continue" ? this.profiles : this.fields
+    get selected_profile_card() {
+        return (
+            <>
+                <ContinueCard
+                    ref = { ref => this.selected_profile_ref = ref }
+                    data = { this.selected_profile }
+                    key = { this.selected_profile.email }
+                    onPress = { _ => this.wipe_continue_profile() }
+                    style = {[ style.generic.text_field_ui, style.login.input ]}/>
+                { this.field_password }
+            </>
+        )
+    }
+
+    get continue() {
+        return this.selected_profile ? this.selected_profile_card : this.profiles
     }
 
     get submit_button() {
+        if (this.submit_type == "continue" && !this.selected_profile) {
+            return null
+        }
+
         return (
             <TalkingButton
                 ref = { ref => this.submit_button_ref = ref }
@@ -277,7 +414,7 @@ class LoginView extends HeadedView {
     get buttons() {
         return (
             <View style = { style.login.button_contain }>
-                { this.submit_type == "continue" ? null : this.submit_button }
+                { this.submit_button }
             </View>
         )
     }
@@ -286,7 +423,9 @@ class LoginView extends HeadedView {
         return (
             <View style = {[ style.generic.view ]}>
                 { this.top }
-                { this.inputs }
+                <View style = { style.login.input_contain }>
+                    { this.submit_type == "continue" ? this.continue : this.fields }
+                </View>
                 { this.buttons }
             </View>
         )

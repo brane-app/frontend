@@ -53,6 +53,10 @@ const input_contain = {
     ...container,
 }
 
+const continue_contain = {
+    ...input_contain,
+}
+
 const input = {
     flexGrow: 0,
 
