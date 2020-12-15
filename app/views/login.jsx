@@ -240,6 +240,7 @@ class LoginView extends HeadedView {
             [ this.client._email ]: {
                 email: this.client._email,
                 secret: this.client._secret,
+                time: Date.now(),
             }
         }
 
@@ -391,15 +392,16 @@ class LoginView extends HeadedView {
     }
 
     get profiles() {
-        return Object.values(this.stored_profiles).map(
-            it => (
+        return Object
+            .values(this.stored_profiles)
+            .sort((it, next) => { return it.time < next.time })
+            .map( it => (
                     <ContinueCard
                         data = { it }
                         key = { it.email }
                         onPress = { (_, data) => this.set_continue_profile(data) }
                         style = {[ style.generic.text_field_ui, style.login.input ]}/>
-                )
-            )
+                ) )
     }
 
     get selected_profile_card() {
