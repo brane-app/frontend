@@ -69,6 +69,7 @@ class HeadedView extends React.Component {
     constructor(opts) {
         super(opts)
         this.state = {modal_visible: false}
+        this.mounted = true
     }
 
     get modal_visible () {
@@ -76,7 +77,7 @@ class HeadedView extends React.Component {
     }
 
     set modal_visible (value) {
-        this.setState({
+        this.set_state_safe({
             modal_visible: value
         })
     }
@@ -141,6 +142,14 @@ class HeadedView extends React.Component {
                 </TouchableOpacity>
             </Modal>
         )
+    }
+
+    componentWillUnmount() {
+        this.mounted = false
+    }
+
+    async set_state_safe(state, callback) {
+        this.mounted && this.setState(state, callback)
     }
 
     navigate_to(where) {
