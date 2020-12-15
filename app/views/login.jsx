@@ -104,7 +104,13 @@ class LoginView extends HeadedView {
         this.selected_profile_ref = null
 
         AsyncStorage.getItem("stored_profiles").then(
-            it => {console.log(it); this.setState({ stored_profiles: JSON.parse(it) || [] })}
+            it => {
+                const data = JSON.parse(it) || {}
+                this.setState({
+                    stored_profiles: data,
+                    submit_type: Object.values(data).length == 0 ? "register": "continue",
+                })
+            }
         )
     }
 
@@ -151,6 +157,11 @@ class LoginView extends HeadedView {
     // continuing stuff
 
     async set_continue_profile(data) {
+        if (data.email && data.secret && await this.client.login(data)) {
+            this.navigate_after_auth()
+            return
+        }
+
         this.setState({ selected_profile: data })
     }
 
@@ -218,10 +229,12 @@ class LoginView extends HeadedView {
                 break
         }
 
-        if (!result) {
-            return
+        if (result) {
+            this.navigate_after_auth()
         }
+    }
 
+    async navigate_after_auth() {
         const writable = {
             ...this.stored_profiles,
             [ this.client._email ]: {
@@ -230,7 +243,6 @@ class LoginView extends HeadedView {
             }
         }
 
-        console.log(JSON.stringify(writable));
         AsyncStorage.setItem("stored_profiles", JSON.stringify(writable))
         global_state.client = this.client
         this.props.navigation.replace("profile")
