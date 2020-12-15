@@ -94,7 +94,7 @@ class LoginView extends HeadedView {
             submit_type: "register",
             submit_disabled: false,
             selected_profile: null,
-            stored_profiles: [],
+            stored_profiles: {},
         }
         this.client = new Client()
         this.input_nick = null
@@ -104,7 +104,7 @@ class LoginView extends HeadedView {
         this.selected_profile_ref = null
 
         AsyncStorage.getItem("stored_profiles").then(
-            it => this.setState({ stored_profiles: it || [] })
+            it => {console.log(it); this.setState({ stored_profiles: JSON.parse(it) || [] })}
         )
     }
 
@@ -217,10 +217,23 @@ class LoginView extends HeadedView {
                 result = await this.submit_continue()
                 break
         }
-        if (result) {
-            global_state.client = this.client
-            this.props.navigation.replace("profile")
+
+        if (!result) {
+            return
         }
+
+        const writable = {
+            ...this.stored_profiles,
+            [ this.client._email ]: {
+                email: this.client._email,
+                secret: this.client._secret,
+            }
+        }
+
+        console.log(JSON.stringify(writable));
+        AsyncStorage.setItem("stored_profiles", JSON.stringify(writable))
+        global_state.client = this.client
+        this.props.navigation.replace("profile")
     }
 
     async submit_wrapped() {
@@ -231,7 +244,8 @@ class LoginView extends HeadedView {
                     if (!await this.submit()) {
                         this.display(`failed to ${this.submit_type}`)
                     }
-                } catch {
+                } catch (err) {
+                    console.log(err);
                     this.display(`error trying to ${this.submit_type}`)
                 } finally {
                     this.setState({ submit_disabled: false })
@@ -267,7 +281,7 @@ class LoginView extends HeadedView {
             <View style = { style.login.top_contain }>
                 { this.top_switch("register") }
                 { this.top_switch("login") }
-                { this.stored_profiles.length == 0 ? null : this.top_switch("continue") }
+                { Object.keys(this.stored_profiles).length == 0 ? null : this.top_switch("continue") }
             </View>
         )
     }
@@ -365,7 +379,7 @@ class LoginView extends HeadedView {
     }
 
     get profiles() {
-        return this.stored_profiles.map(
+        return Object.values(this.stored_profiles).map(
             it => (
                     <ContinueCard
                         data = { it }
