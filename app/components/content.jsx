@@ -23,7 +23,7 @@ class Content extends React.Component {
     }
 
     componentDidMount() {
-        this.content.file_url.then(it => this.setState({file_url: it}))
+        this.content.file_url.then( it => this.setState({ file_url: it }) )
     }
 
     get file_url() {
@@ -39,18 +39,19 @@ class Content extends React.Component {
     get image() {
         return (
             <AutoHeightImage
-                source = {{uri: this.file_url || PLACEHOLDER}}
-                style = {[style.content.image]}
-                width = {this.screen_width}/>
+                source = {{ uri: this.file_url || PLACEHOLDER }}
+                style = {[ style.content.image ]}
+                width = { this.screen_width }/>
         )
     }
 
     render() {
         return (
             <ScrollView
-                style = {[style.content.contain_image]}
-                contentContainerStyle = {[style.content.contain_image_container]}>
-                {this.image}
+                style = {[ style.content.contain_image ]}
+                contentContainerStyle = {[ style.content.contain_image_container ]}>
+                { this.author }
+                { this.image }
             </ScrollView>
         )
     }
