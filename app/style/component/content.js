@@ -2,14 +2,14 @@ import { StyleSheet } from "react-native"
 
 const content_styles = {
     image: {
-        marginTop: "auto",
-        marginBottom: "auto",
-
         resizeMode: "contain",
     },
 
     contain_image: {
         display: "flex",
+
+        marginBottom: "auto",
+        marginTop: "auto",
 
         width: "100%",
         height: "100%",
