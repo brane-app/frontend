@@ -4,52 +4,42 @@ import { StyleSheet } from "react-native"
 import colors from "../../values/colors"
 import sizes from "../../values/sizes"
 
-const headed_view_things = {
-    contain: {
-        height: "100%",
-        backgroundColor: colors.dark,
+const contain = {
+    display: "flex",
 
-        marginTop: Constants.statusBarHeight,
-    },
+    height: "100%",
 
-    content_contain: {
-        position: "absolute",
+    backgroundColor: colors.dark,
+}
 
-        height: "100%",
-        width: "100%",
-        zIndex: 0,
+const status_bar_blank = {
+    flexGrow: 0,
 
-        paddingTop: sizes.navbar,
-    },
+    height: Constants.statusBarHeight,
+    width: "100%",
 
-    header: {
-        position: "absolute",
+    backgroundColor: "#00000000",
+}
 
-        width: "100%",
-        height: sizes.navbar,
-        zIndex: 1,
-    },
+const header = {
+    flexGrow: 0,
 
-    header_contain: {
-        display: "flex",
-        flexDirection: "row",
+    height: sizes.navbar,
+    width: "100%",
+}
 
-        width: "95%",
-        marginTop: "auto",
-        marginBottom: "auto",
-        marginLeft: "auto",
-        marginRight: "auto",
-    },
+const content_contain = {
+    flexGrow: 1,
 
-    text: {
-        flexGrow: 1,
-        fontSize: 16,
-        paddingLeft: 4,
-    },
+    width: "100%",
+    height: 0,
 }
 
 const headed_view = StyleSheet.create({
-    ...headed_view_things,
+    contain,
+    header,
+    status_bar_blank,
+    content_contain,
 })
 
 export default headed_view
