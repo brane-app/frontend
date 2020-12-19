@@ -50,8 +50,6 @@ class ProfileCard extends React.Component {
 
     get profile_image() {
         return (
-            // We don't have pfp's yet :(
-            // But we will soon
             <Image style = {style.profile.image}/>
         )
     }
