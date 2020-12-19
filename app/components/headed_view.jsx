@@ -25,7 +25,7 @@ class Close extends React.Component {
             style.cross.cross,
             {
                 transform: [
-                    {rotate: "45deg"},
+                    { rotate: "45deg" },
                 ],
             }
         ]
@@ -33,9 +33,9 @@ class Close extends React.Component {
 
     render() {
         return (
-            <View style = {this.style}>
-                <View style = {style.cross.horizontal_line}/>
-                <View style = {style.cross.vertical_line}/>
+            <View style = { this.style }>
+                <View style = { style.cross.horizontal_line }/>
+                <View style = { style.cross.vertical_line }/>
             </View>
         )
     }
@@ -51,10 +51,10 @@ class NavButton extends React.Component {
     render () {
         return (
             <TouchableOpacity
-                onPress = {this._onPress}
-                style = {style.nav_modal.button}>
-                <Text style = {[style.generic.text_ui, style.nav_modal.text]}>
-                    {this._text}
+                onPress = { this._onPress }
+                style = { style.nav_modal.button }>
+                <Text style = {[style.generic.text_ui, style.nav_modal.text ]}>
+                    {this._text }
                 </Text>
             </TouchableOpacity>
         )
@@ -64,7 +64,7 @@ class NavButton extends React.Component {
 class HeadedView extends React.Component {
     constructor(opts) {
         super(opts)
-        this.state = {modal_visible: false}
+        this.state = { modal_visible: false }
         this.mounted = true
     }
 
@@ -85,12 +85,12 @@ class HeadedView extends React.Component {
     get header() {
         return (
             <TouchableOpacity
-                style = {style.headed_view.header}
-                onPress = {() => {this.modal_visible = true}}>
+                style = { style.headed_view.header }
+                onPress = {() => {this.modal_visible = true }}>
                 <View style = { style.ui.vertical_center }>
                     <View style = { style.ui.horizontal_center }>
-                        <Text style = {[style.generic.text_ui, style.headed_view.text]}>
-                            {this.name}
+                        <Text style = {[style.generic.text_ui, style.headed_view.text ]}>
+                            {this.name }
                         </Text>
                     </View>
                 </View>
@@ -105,8 +105,8 @@ class HeadedView extends React.Component {
     get nav_close () {
         return (
             <TouchableOpacity
-                onPress = {() => {this.modal_visible = false}}
-                style = {style.nav_modal.close}>
+                onPress = {() => {this.modal_visible = false }}
+                style = { style.nav_modal.close }>
                 <Close/>
             </TouchableOpacity>
         )
@@ -131,15 +131,15 @@ class HeadedView extends React.Component {
     get nav_modal () {
         return (
             <Modal
-                transparent = {true}
-                visible = {this.modal_visible}>
+                transparent = { true }
+                visible = { this.modal_visible }>
                 <TouchableOpacity
-                    onPress = {() => {this.modal_visible = false}}
-                    activeOpacity = {1}
-                    style = {style.nav_modal.dim}>
-                    <View style = {style.nav_modal.contain}>
-                        {this.nav_close}
-                        {this.nav_buttons}
+                    onPress = {() => {this.modal_visible = false }}
+                    activeOpacity = { 1 }
+                    style = { style.nav_modal.dim }>
+                    <View style = { style.nav_modal.contain }>
+                        {this.nav_close }
+                        {this.nav_buttons }
                     </View>
                 </TouchableOpacity>
             </Modal>
@@ -170,7 +170,7 @@ class HeadedView extends React.Component {
 
     render () {
         return (
-            <View style = {style.headed_view.contain}>
+            <View style = { style.headed_view.contain }>
                 { this.status_bar_blank }
                 { this.nav_modal }
                 { this.header }
