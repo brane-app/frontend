@@ -44,6 +44,11 @@ const text_validator_message = {
     ...text_small,
 }
 
+const vertical_center = {
+    display: "flex",
+    justifyContent: "center",
+}
+
 const text_code_block = {
     color: colors.text_code_block,
     backgroundColor: colors.background_code_block,
@@ -58,4 +63,5 @@ export default StyleSheet.create({
     text_light,
     text_small,
     text_validator_message,
+    vertical_center,
 })
