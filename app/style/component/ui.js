@@ -47,6 +47,16 @@ const text_validator_message = {
 const vertical_center = {
     display: "flex",
     justifyContent: "center",
+
+    height: "100%",
+}
+
+const horizontal_center = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+
+    width: "100%",
 }
 
 const text_code_block = {
@@ -63,5 +73,6 @@ export default StyleSheet.create({
     text_light,
     text_small,
     text_validator_message,
+    horizontal_center,
     vertical_center,
 })
