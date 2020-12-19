@@ -1,29 +1,29 @@
 import React from "react"
 import {
     ScrollView,
+    Text,
     View,
 } from "react-native"
-
 import AutoHeightImage from "react-native-auto-height-image"
-
-import style_content from "../style/component/content"
+import AuthorHeader from "./author_header"
 
 const style = {
-    content: style_content,
+    content: require("../style/component/content").default,
 }
 
 const PLACEHOLDER = "https://placekitten.com/500/300"
 
 class Content extends React.Component {
-    constructor(opts) {
+    constructor(opts = {}) {
         super(opts)
+        this.state = { ...this.state, file_url: "", author: undefined }
         this.content = opts.content
         this.screen_width = opts.screen_width
-        this.state = { ...this.state, file_url: "" }
     }
 
     componentDidMount() {
         this.content.file_url.then( it => this.setState({ file_url: it }) )
+        this.content.author.then( it => this.setState({ author: it}) ) //this.setState({ author: it}) )
     }
 
     get file_url() {
@@ -31,9 +31,15 @@ class Content extends React.Component {
     }
 
     get author() {
-        return (
-            <View/>
-        )
+        return this.state.author
+    }
+
+    get author_header() {
+        if (!this.author) {
+            return
+        }
+
+        return <AuthorHeader user = { this.author }/>
     }
 
     get image() {
@@ -50,7 +56,7 @@ class Content extends React.Component {
             <ScrollView
                 style = {[ style.content.contain_image ]}
                 contentContainerStyle = {[ style.content.contain_image_container ]}>
-                { this.author }
+                { this.author_header }
                 { this.image }
             </ScrollView>
         )
