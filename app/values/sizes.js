@@ -1,5 +1,5 @@
 const sizes = {
-    navbar: 32,
+    navbar: 40,
 }
 
 export default sizes
