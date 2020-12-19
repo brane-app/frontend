@@ -6,18 +6,12 @@ import {
     View,
 } from "react-native"
 
-import style_generic from "../style/generic"
-import style_headed_view from "../style/component/headed_view"
-import style_nav_modal from "../style/component/nav_modal"
-import style_cross from "../style/drawing/cross"
-import style_ui from "../style/component/ui"
-
 const style = {
-    generic: style_generic,
-    headed_view: style_headed_view,
-    nav_modal: style_nav_modal,
-    cross: style_cross,
-    ui: style_ui,
+    generic: require("../style/generic").default,
+    headed_view: require("../style/component/headed_view").default,
+    nav_modal: require("../style/component/nav_modal").default,
+    cross: require("../style/drawing/cross").default,
+    ui: require("../style/component/ui").default,
 }
 
 class Close extends React.Component {
