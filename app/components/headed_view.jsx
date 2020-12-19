@@ -10,12 +10,14 @@ import style_generic from "../style/generic"
 import style_headed_view from "../style/component/headed_view"
 import style_nav_modal from "../style/component/nav_modal"
 import style_cross from "../style/drawing/cross"
+import style_ui from "../style/component/ui"
 
 const style = {
     generic: style_generic,
     headed_view: style_headed_view,
     nav_modal: style_nav_modal,
-    cross: style_cross
+    cross: style_cross,
+    ui: style_ui,
 }
 
 class Close extends React.Component {
@@ -82,17 +84,23 @@ class HeadedView extends React.Component {
         })
     }
 
+    get status_bar_blank() {
+        return <View style = {[ style.headed_view.status_bar_blank ]}/>
+    }
+
     get header() {
         return (
-            <View style = {style.headed_view.header}>
-                <TouchableOpacity
-                    style = {style.headed_view.header_contain}
-                    onPress = {() => {this.modal_visible = true}}>
-                    <Text style = {[style.generic.text_ui, style.headed_view.text]}>
-                        {this.name}
-                    </Text>
-                </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+                style = {style.headed_view.header}
+                onPress = {() => {this.modal_visible = true}}>
+                <View style = { style.ui.vertical_center }>
+                    <View style = { style.ui.horizontal_center }>
+                        <Text style = {[style.generic.text_ui, style.headed_view.text]}>
+                            {this.name}
+                        </Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
         )
     }
 
@@ -169,10 +177,11 @@ class HeadedView extends React.Component {
     render () {
         return (
             <View style = {style.headed_view.contain}>
-                {this.nav_modal}
-                {this.header}
-                <View style = {style.headed_view.content_contain}>
-                    {this.content}
+                { this.status_bar_blank }
+                { this.nav_modal }
+                { this.header }
+                <View style = { style.headed_view.content_contain }>
+                    { this.content }
                 </View>
             </View>
         )
