@@ -28,7 +28,7 @@
       "resizeMode": "contain"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "enabled": false,
     },
     "version": "0.2.2",
     "web": {
