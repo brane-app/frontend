@@ -8,11 +8,8 @@ const content_styles = {
     contain_image: {
         display: "flex",
 
-        marginBottom: "auto",
-        marginTop: "auto",
-
-        width: "100%",
-        height: "100%",
+        marginBottom: 16,
+        marginTop: 16,
     },
 
     contain_image_container: {

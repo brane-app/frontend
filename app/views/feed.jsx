@@ -106,8 +106,6 @@ class FeedView extends HeadedView {
     get scroller() {
         return (
             <ScrollView
-                pagingEnabled
-                horizontal = {true}
                 style = {[style.feed.image_scroller]}
                 onLayout = { event => this.set_state_safe({ screen_width: event.nativeEvent.layout.width }) }
                 onScroll = { event => this.handle_scroll(event.nativeEvent.contentOffset.x) }>
