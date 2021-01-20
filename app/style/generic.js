@@ -2,48 +2,46 @@ import { StyleSheet } from "react-native";
 
 import colors from "../values/colors"
 
-const things_iu = {
-    text_ui: {
-        fontSize: 19,
+const text_ui = {
+    fontSize: 19,
 
-        color: colors.light,
-    },
-
-    button_ui: {
-        backgroundColor: colors.blue,
-        alignItems: "center",
-
-        minWidth: "30%",
-        marginLeft: "auto",
-        marginRight: "auto",
-        padding: 10,
-
-        borderRadius:  1000,
-    },
-
-    text_field_ui: {
-        borderColor: colors.blue,
-        borderStyle: "solid",
-        borderWidth: 2,
-        borderRadius: 8,
-
-        color: colors.light,
-        backgroundColor: colors.dark,
-    },
+    color: colors.light,
 }
 
-const misc = {
-    view: {
-        backgroundColor: colors.background,
+const button_ui = {
+    backgroundColor: colors.blue,
+    alignItems: "center",
 
-        height: "100%",
-        width: "100%",
-    },
+    minWidth: "30%",
+    marginLeft: "auto",
+    marginRight: "auto",
+    padding: 10,
+
+    borderRadius:  1000,
+}
+
+const text_field_ui = {
+    borderColor: colors.blue,
+    borderStyle: "solid",
+    borderWidth: 2,
+    borderRadius: 8,
+
+    color: colors.light,
+    backgroundColor: colors.dark,
+}
+
+const view = {
+    backgroundColor: colors.background,
+
+    height: "100%",
+    width: "100%",
 }
 
 const generic = StyleSheet.create({
-    ...things_iu,
-    ...misc,
+    button_ui,
+    text_field_ui,
+    text_ui,
+    view,
 })
 
 export default generic

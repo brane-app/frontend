@@ -2,11 +2,12 @@ import { Client } from "imonke"
 import React from "react"
 import {
     AsyncStorage,
+    BackHandler,
     Image,
+    Pressable,
     Text,
     TextInput,
     TouchableOpacity,
-    Pressable,
     View,
 } from "react-native"
 
@@ -96,6 +97,7 @@ class LoginView extends HeadedView {
             selected_profile: null,
             stored_profiles: {},
         }
+        this.back_handler = null
         this.client = new Client()
         this.input_nick = null
         this.input_email = null
@@ -157,6 +159,11 @@ class LoginView extends HeadedView {
     // alt login stuff
 
     async set_selected_profile(data) {
+        this.back_handler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            async () => { this.wipe_selected_profile() }
+        )
+
         if (data.email && data.secret && await this.client.login(data)) {
             this.navigate_after_auth()
             return
@@ -165,7 +172,9 @@ class LoginView extends HeadedView {
         this.set_state_safe({ selected_profile: data })
     }
 
-    async wipe_selected_profile(data) {
+    async wipe_selected_profile() {
+        this.back_handler && this.back_handler.remove()
+
         this.set_state_safe({ selected_profile: null })
     }
 

@@ -35,11 +35,9 @@ const content_contain = {
     height: 0,
 }
 
-const headed_view = StyleSheet.create({
+export default StyleSheet.create({
     contain,
     header,
     status_bar_blank,
     content_contain,
 })
-
-export default headed_view
