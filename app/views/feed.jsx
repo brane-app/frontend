@@ -53,6 +53,12 @@ class FeedView extends HeadedView {
         return this.state.terminated
     }
 
+    get scroll_view_props() {
+        return {
+            showsVerticalScrollIndicator: false,
+        }
+    }
+
     async grow_buffer() {
         if (this.terminated) {
             return
@@ -112,7 +118,8 @@ class FeedView extends HeadedView {
                 layoutProvider = { this.layout_provider }
                 renderFooter = { this.footer_render }
                 rowRenderer = { this.row_renderer }
-                />
+                scrollViewProps = { this.scroll_view_props}
+                style = { style.feed.image_scroller }/>
         )
     }
 
