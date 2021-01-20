@@ -17,7 +17,6 @@ class FeedView extends HeadedView {
         super(opts)
         this.chunk = 10
         this.head = ""
-        this.terminated = false
         this.layout_provider = new LayoutProvider(
             (index) => { return 0 }, // idk it's just images bro
             (type, it) => {
@@ -30,7 +29,7 @@ class FeedView extends HeadedView {
         this.data_provider = new DataProvider((it, next) => { it == next })
         this.state = {
             ...this.state, buffer: [], screen_width: 1080,
-            data_provider_state: null
+            data_provider_state: null, terminated: false,
         }
     }
 
@@ -50,6 +49,10 @@ class FeedView extends HeadedView {
         return this.state.data_provider_state
     }
 
+    get terminated() {
+        return this.state.terminated
+    }
+
     async grow_buffer() {
         if (this.terminated) {
             return
@@ -61,7 +64,7 @@ class FeedView extends HeadedView {
         })
 
         if (fetched.length === 0) {
-            this.terminated = true
+            this.set_state_safe({ terminated: true })
             return
         }
 
@@ -76,7 +79,9 @@ class FeedView extends HeadedView {
 
     async reset() {
         this.set_state_safe({
-            buffer: [], data_provider_state: null,
+            buffer: [],
+            data_provider_state: null,
+            terminated: false,
         })
     }
 
@@ -108,6 +113,10 @@ class FeedView extends HeadedView {
                 rowRenderer = { this.row_renderer }
                 />
         )
+    }
+
+    get footer() {
+
     }
 
     get content() {
