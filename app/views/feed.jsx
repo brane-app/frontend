@@ -1,5 +1,5 @@
 import React from "react"
-import { View } from "react-native"
+import { View, Text } from "react-native"
 import { DataProvider, LayoutProvider, RecyclerListView } from "recyclerlistview"
 
 import imonke from "imonke"
@@ -110,13 +110,23 @@ class FeedView extends HeadedView {
                 forceNonDeterministicRendering = { true }
                 dataProvider = { this.data_provider_state }
                 layoutProvider = { this.layout_provider }
+                renderFooter = { this.footer_render }
                 rowRenderer = { this.row_renderer }
                 />
         )
     }
 
-    get footer() {
-
+    get footer_render() {
+        const text = this.terminated ? "You've reached the end" : "Getting more content..."
+        return () => (
+            <View
+                style = {[ style.generic.center_padded(16) ]}>
+                <Text
+                    style = {[ style.generic.text_light_ui ]}>
+                    { text }
+                </Text>
+            </View>
+        )
     }
 
     get content() {
