@@ -2,6 +2,12 @@ import { StyleSheet } from "react-native"
 
 import colors from "../../values/colors"
 
+const cross = {
+    height: "100%",
+    width: "100%",
+
+}
+
 const horizontal_line = {
     position: "absolute",
     width: "90%",
@@ -13,29 +19,16 @@ const horizontal_line = {
     backgroundColor: colors.light,
 }
 
-const cross_things = {
-    cross: {
-        height: "100%",
-        width: "100%",
+const vertical_line = {
+    ...horizontal_line,
 
-    },
-
-    horizontal_line: {
-        ...horizontal_line,
-    },
-
-    vertical_line: {
-        ...horizontal_line,
-
-        transform: [
-            {rotate: "90deg"}
-        ],
-    },
+    transform: [
+        {rotate: "90deg"}
+    ],
 }
 
-
-const cross = StyleSheet.create({
-    ...cross_things
+export default StyleSheet.create({
+    cross,
+    horizontal_line,
+    vertical_line,
 })
-
-export default cross
