@@ -95,8 +95,8 @@ class FeedView extends HeadedView {
         return (
             <Content
                 content = { it }
-                screen_width = { 400 } // TODO
-                key = { `${Math.random()}` }/> // TODO get the id somehow
+                screen_width = { this.screen_width }
+                key = { it._data ? it._data.id : `${Math.random()}` }/>
         )
     }
 
