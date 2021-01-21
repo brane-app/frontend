@@ -30,7 +30,7 @@
     "updates": {
       "enabled": false,
     },
-    "version": "0.2.3",
+    "version": "0.2.4",
     "web": {
       "favicon": "./assets/favicon.png"
     }
