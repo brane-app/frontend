@@ -19,9 +19,9 @@ const fields = (kinds: [kind: Input, hook: (value: string) => null][]) => (
   draw_fields(
     kinds.map(([kind, hook]) => ({
       name: Input[kind],
-      secureTextEntry: kind === Input.password,
       key: kind,
-      onChangeText: hook,
+      valueHook: hook,
+      secureTextEntry: kind === Input.password,
     })),
     {/*TODO*/},
   )
