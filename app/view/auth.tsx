@@ -1,6 +1,6 @@
 import { Client } from "imonke";
 import React, { useState } from "react";
-import { Button, Text, View } from "react-native";
+import { Button, Pressable, Text, View } from "react-native";
 import { Snackbar } from "react-native-paper";
 
 import { TextInputValidated } from "../component";
@@ -23,6 +23,23 @@ const draw_inputs_for = (kinds: [kind: Input, hook: (value: string) => null][]) 
     {/*TODO*/},
   )
 );
+
+const submit_kind_switcher = (current, hook) => {
+  const [target, set_target] = useState(
+    current == Auth.register ? Auth.login : Auth.register,
+  );
+
+  return (
+    <Pressable
+      onPress={() => {
+        hook(target);
+        set_target(current);
+      }}
+    >
+      <Text>{`I'd rather ${Auth[target]}`}</Text>
+    </Pressable>
+  );
+};
 
 export default (props) => {
   let [submit_kind, set_submit_kind] = useState(Auth.register);
@@ -62,6 +79,7 @@ export default (props) => {
           }}
         />
       </View>
+      {submit_kind_switcher(submit_kind, set_submit_kind)}
       <Snackbar
         duration={2000}
         visible={error_message != null}
