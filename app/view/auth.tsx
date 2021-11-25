@@ -36,33 +36,31 @@ export default (props) => {
   return (
     <View>
       <View>
-        <View>
-          {fields([
-            submit_kind == Auth.register ? [Input.nick, set_nick] : null,
-            [Input.email, set_email],
-            [Input.password, set_password],
-          ].filter((it) => it))}
-        </View>
-        <View>
-          <Button
-            title={"submit"}
-            onPress={() => {
-              do_submit(
-                submit_kind,
-                new Map([
-                  [Input.nick, nick],
-                  [Input.email, email],
-                  [Input.password, password],
-                ]),
-              )
-                .then((client) => {/*TODO*/})
-                .catch((caught) => {
-                  console.log(caught);
-                  set_error_message(caught.message ?? caught);
-                });
-            }}
-          />
-        </View>
+        {fields([
+          submit_kind == Auth.register ? [Input.nick, set_nick] : null,
+          [Input.email, set_email],
+          [Input.password, set_password],
+        ].filter((it) => it))}
+      </View>
+      <View>
+        <Button
+          title={"submit"}
+          onPress={() => {
+            do_submit(
+              submit_kind,
+              new Map([
+                [Input.nick, nick],
+                [Input.email, email],
+                [Input.password, password],
+              ]),
+            )
+              .then((client) => {/*TODO*/})
+              .catch((caught) => {
+                console.log(caught);
+                set_error_message(caught.message ?? caught);
+              });
+          }}
+        />
       </View>
       <Snackbar
         duration={2000}
