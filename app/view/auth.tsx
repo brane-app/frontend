@@ -17,7 +17,7 @@ const draw_inputs = (kinds: [kind: Input, hook: (value: string) => null][]) => (
   ))
 );
 
-const submit_kind_switcher = (current, hook) => {
+const draw_auth_toggle = (current, hook) => {
   const [target, set_target] = useState(
     current == Auth.register ? Auth.login : Auth.register,
   );
@@ -34,7 +34,7 @@ const submit_kind_switcher = (current, hook) => {
   );
 };
 
-const error = (message: string, hook: (value: string) => null) => (
+const draw_error = (message: string, hook: (value: string) => null) => (
   <Snackbar
     duration={2000}
     visible={message != null}
@@ -80,8 +80,8 @@ export default (props) => {
           }}
         />
       </View>
-      {submit_kind_switcher(submit_kind, set_submit_kind)}
-      {error(error_message, set_error_message)}
+      {draw_auth_toggle(submit_kind, set_submit_kind)}
+      {draw_error(error_message, set_error_message)}
     </View>
   );
 };
