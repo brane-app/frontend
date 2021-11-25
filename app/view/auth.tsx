@@ -41,13 +41,21 @@ const submit_kind_switcher = (current, hook) => {
   );
 };
 
+const error = (message: string, hook: (value: string) => null) => (
+  <Snackbar
+    duration={2000}
+    visible={message != null}
+    onDismiss={() => hook(null)}
+    children={message}
+  />
+);
+
 export default (props) => {
   let [submit_kind, set_submit_kind] = useState(Auth.register);
   let [nick, set_nick] = useState(null);
   let [email, set_email] = useState(null);
   let [password, set_password] = useState(null);
 
-  let [error_visible, set_error_visible] = useState(false);
   let [error_message, set_error_message] = useState(null);
 
   return (
@@ -80,12 +88,7 @@ export default (props) => {
         />
       </View>
       {submit_kind_switcher(submit_kind, set_submit_kind)}
-      <Snackbar
-        duration={2000}
-        visible={error_message != null}
-        onDismiss={() => set_error_message(null)}
-        children={error_message}
-      />
+      {error(error_message, set_error_message)}
     </View>
   );
 };
