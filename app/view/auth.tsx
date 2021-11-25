@@ -6,14 +6,14 @@ import { Snackbar } from "react-native-paper";
 import { TextInputValidated } from "../component";
 import { Auth, do_submit, Input } from "../library/auth";
 
-const draw_fields = (props_each: any[], props: any) => (
+const draw_inputs = (props_each: any[], props: any) => (
   props_each.map(
     (it) => <TextInputValidated {...props} {...it} />,
   )
 );
 
-const fields = (kinds: [kind: Input, hook: (value: string) => null][]) => (
-  draw_fields(
+const draw_inputs_for = (kinds: [kind: Input, hook: (value: string) => null][]) => (
+  draw_inputs(
     kinds.map(([kind, hook]) => ({
       name: Input[kind],
       key: kind,
@@ -36,7 +36,7 @@ export default (props) => {
   return (
     <View>
       <View>
-        {fields([
+        {draw_inputs_for([
           submit_kind == Auth.register ? [Input.nick, set_nick] : null,
           [Input.email, set_email],
           [Input.password, set_password],
