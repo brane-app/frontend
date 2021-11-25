@@ -4,7 +4,7 @@ import { Button, Text, View } from "react-native";
 import { Snackbar } from "react-native-paper";
 
 import { TextInputValidated } from "../component";
-import { do_submit, Input, SubmitKind } from "../library/login";
+import { Auth, do_submit, Input } from "../library/auth";
 
 const draw_fields = (props_each: any[], props: any) => (
   props_each.map(
@@ -25,7 +25,7 @@ const fields = (kinds: [kind: Input, hook: (value: string) => null][]) => (
 );
 
 export default (props) => {
-  let [submit_kind, set_submit_kind] = useState(SubmitKind.register);
+  let [submit_kind, set_submit_kind] = useState(Auth.register);
   let [nick, set_nick] = useState(null);
   let [email, set_email] = useState(null);
   let [password, set_password] = useState(null);
@@ -38,7 +38,7 @@ export default (props) => {
       <View>
         <View>
           {fields([
-            submit_kind == SubmitKind.register ? [Input.nick, set_nick] : null,
+            submit_kind == Auth.register ? [Input.nick, set_nick] : null,
             [Input.email, set_email],
             [Input.password, set_password],
           ].filter((it) => it))}

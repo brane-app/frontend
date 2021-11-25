@@ -1,4 +1,4 @@
-export enum SubmitKind {
+export enum Auth {
   register,
   login,
 }

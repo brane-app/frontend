@@ -1,16 +1,16 @@
 import { Client } from "imonke";
 
-import { Input, SubmitKind } from "./types";
+import { Auth, Input } from "./types";
 
 export const do_submit = async (
-  kind: SubmitKind,
+  kind: Auth,
   fields: { [key: Input]: string },
 ): Client => {
   let client: Client = new Client({});
   let ok: bool = false;
 
   switch (kind) {
-    case SubmitKind.login:
+    case Auth.login:
       ok = await client.login(
         {
           email: fields.get(Input.email),
@@ -18,7 +18,7 @@ export const do_submit = async (
         },
       );
       break;
-    case SubmitKind.register:
+    case Auth.register:
       ok = await client.create({
         nick: fields.get(Input.nick),
         email: fields.get(Input.email),
