@@ -1,24 +1,10 @@
+import { Client } from "imonke";
 import React, { useState } from "react";
 import { Button, Text, View } from "react-native";
+import { Snackbar } from "react-native-paper";
 
 import { TextInputValidated } from "../component";
-
-enum SubmitKind {
-  register,
-  login,
-}
-
-enum Input {
-  nick,
-  email,
-  password,
-}
-
-// TODO:
-const do_submit = (
-  kind: SubmitKind,
-  fields: { [key: Inpit]: string },
-): bool => {};
+import { do_submit, Input, SubmitKind } from "../library/login";
 
 const draw_fields = (props_each: any[], props: any) => (
   props_each.map(
@@ -44,30 +30,46 @@ export default (props) => {
   let [email, set_email] = useState(null);
   let [password, set_password] = useState(null);
 
+  let [error_visible, set_error_visible] = useState(false);
+  let [error_message, set_error_message] = useState(null);
+
   return (
     <View>
       <View>
-        {fields([
-          submit_kind == SubmitKind.register ? [Input.nick, set_nick] : null,
-          [Input.email, set_email],
-          [Input.password, set_password],
-        ].filter((it) => it))}
+        <View>
+          {fields([
+            submit_kind == SubmitKind.register ? [Input.nick, set_nick] : null,
+            [Input.email, set_email],
+            [Input.password, set_password],
+          ].filter((it) => it))}
+        </View>
+        <View>
+          <Button
+            title={"submit"}
+            onPress={() => {
+              do_submit(
+                submit_kind,
+                new Map([
+                  [Input.nick, nick],
+                  [Input.email, email],
+                  [Input.password, password],
+                ]),
+              )
+                .then((client) => {/*TODO*/})
+                .catch((caught) => {
+                  console.log(caught);
+                  set_error_message(caught.message ?? caught);
+                });
+            }}
+          />
+        </View>
       </View>
-      <View>
-        <Button
-          title={"submit"}
-          onPress={(_) => {
-            do_submit(
-              submit_kind,
-              new Map([
-                [Input.nick, nick],
-                [Input.email, email],
-                [Input.password, password],
-              ]),
-            );
-          }}
-        />
-      </View>
+      <Snackbar
+        duration={2000}
+        visible={error_message != null}
+        onDismiss={() => set_error_message(null)}
+        children={error_message}
+      />
     </View>
   );
 };
