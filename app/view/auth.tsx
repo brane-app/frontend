@@ -6,22 +6,15 @@ import { Snackbar } from "react-native-paper";
 import { TextInputValidated } from "../component";
 import { Auth, do_submit, Input } from "../library/auth";
 
-const draw_inputs = (props_each: any[], props: any) => (
-  props_each.map(
-    (it) => <TextInputValidated {...props} {...it} />,
-  )
-);
-
-const draw_inputs_for = (kinds: [kind: Input, hook: (value: string) => null][]) => (
-  draw_inputs(
-    kinds.map(([kind, hook]) => ({
-      name: Input[kind],
-      key: kind,
-      valueHook: hook,
-      secureTextEntry: kind === Input.password,
-    })),
-    {/*TODO*/},
-  )
+const draw_inputs = (kinds: [kind: Input, hook: (value: string) => null][]) => (
+  kinds.map(([kind, hook]) => (
+    <TextInputValidated
+      name={Input[kind]}
+      key={`input_text_${kind}`}
+      valueHook={hook}
+      secureTextEntry={kind === Input.password}
+    />
+  ))
 );
 
 const submit_kind_switcher = (current, hook) => {
@@ -61,7 +54,7 @@ export default (props) => {
   return (
     <View>
       <View>
-        {draw_inputs_for([
+        {draw_inputs([
           submit_kind == Auth.register ? [Input.nick, set_nick] : null,
           [Input.email, set_email],
           [Input.password, set_password],
