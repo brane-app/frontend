@@ -44,7 +44,7 @@ const draw_error = (message: string, hook: (value: string) => null) => (
 );
 
 export default (props) => {
-  let [submit_kind, set_submit_kind] = useState(Auth.register);
+  let [submit_kind, set_submit_kind] = useState(props.kind ?? Auth.register);
   let [nick, set_nick] = useState(null);
   let [email, set_email] = useState(null);
   let [password, set_password] = useState(null);

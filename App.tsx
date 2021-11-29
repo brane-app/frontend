@@ -1,11 +1,11 @@
 import React from "react";
 import { SafeAreaView, StatusBar, View } from "react-native";
 
-import { Auth } from "./app/view";
+import { AuthGate } from "./app/view";
 
 export default App = () => (
-  <SafeAreaView>
+  <SafeAreaView style={{ flex: 1 }}>
     <StatusBar style={"light"} translucent={false} />
-    <Auth />
+    <AuthGate />
   </SafeAreaView>
 );
