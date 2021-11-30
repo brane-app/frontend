@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Auth from "./auth";
 import AuthGate from "./auth-gate";
-
+import RootNavigator from "./root-navigator";
 import { Auth as AuthKind } from "../library/auth";
 
 const draw_register = () => <Auth kind={AuthKind.register} />;
@@ -19,6 +19,7 @@ export default () => {
         <Stack.Screen name="Gate" component={AuthGate} />
         <Stack.Screen name="Register" component={draw_register} />
         <Stack.Screen name="Login" component={draw_login} />
+        <Stack.Screen name="Root" component={RootNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );

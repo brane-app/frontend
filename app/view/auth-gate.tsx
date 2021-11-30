@@ -5,6 +5,6 @@ export default (props) => (
   <View>
     <Button title={"register"} onPress={() => props.navigation.navigate("Register")} />
     <Button title={"log in"} onPress={() => props.navigation.navigate("Login")} />
-    <Button title={"skip"} />
+    <Button title={"skip"} onPress={() => props.navigation.navigate("Root")} />
   </View>
 );
