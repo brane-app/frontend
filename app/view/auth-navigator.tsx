@@ -7,8 +7,25 @@ import AuthGate from "./auth-gate";
 import RootNavigator from "./root-navigator";
 import { Auth as AuthKind } from "../library/auth";
 
-const draw_register = () => <Auth kind={AuthKind.register} />;
-const draw_login = () => <Auth kind={AuthKind.login} />;
+// TODO React doesn't like it when I pass the client -> props
+// what else can I do?
+const on_auth = (props, client) => props.navigation.navigate("Root", { client });
+
+const draw_register = (props) => (
+  <Auth
+    kind={AuthKind.register}
+    on_auth={on_auth}
+    {...props}
+  />
+);
+
+const draw_login = (props) => (
+  <Auth
+    kind={AuthKind.login}
+    on_auth={on_auth}
+    {...props}
+  />
+);
 
 export default () => {
   const Stack = createNativeStackNavigator();

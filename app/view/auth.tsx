@@ -72,7 +72,7 @@ export default (props) => {
                 [Input.password, password],
               ]),
             )
-              .then((client) => {/*TODO*/})
+              .then((client) => props.on_auth(props, client))
               .catch((caught) => {
                 console.log(caught);
                 set_error_message(caught.message ?? caught);

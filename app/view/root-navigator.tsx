@@ -7,7 +7,15 @@ import Feed from "./feed";
 import Auth from "./auth";
 import { Auth as AuthKind } from "../library/auth";
 
-const draw_register = () => <Auth kind={AuthKind.register} />;
+const on_auth = (props, client) => {/* TODO */};
+
+const draw_register = (props) => (
+  <Auth
+    kind={AuthKind.register}
+    on_auth={on_auth}
+    {...props}
+  />
+);
 
 export default (props) => {
   const Drawer = createDrawerNavigator();
