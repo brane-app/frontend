@@ -86,8 +86,6 @@ const content_scroller = (feed) => {
   );
 };
 
-// TODO props is gonna include the client, right?
-// That way we can do different feed stuff ( liking, reporting ) depending
 export default (props) => {
   let feed = new Feed({ client: props.client, feed: props.feed });
 
