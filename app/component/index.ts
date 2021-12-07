@@ -1,3 +1,4 @@
+import Content from "./content";
 import TextInputValidated from "./text-input-validated";
 
-export { TextInputValidated };
+export { Content, TextInputValidated };
