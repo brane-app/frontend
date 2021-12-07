@@ -2,11 +2,13 @@ import { Client } from "imonke";
 
 import { Auth, Input } from "./types";
 
+const api_default = "https://api.brane.gastrodon.io";
+
 export const do_submit = async (
   kind: Auth,
   fields: { [key: Input]: string },
 ): Client => {
-  let client: Client = new Client({});
+  let client: Client = new Client({ api: api_default });
   let ok: bool = false;
 
   switch (kind) {
