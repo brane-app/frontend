@@ -136,7 +136,7 @@ const content_scroller = (feed) => {
       layoutProvider={new LayoutProvider(
         (index) => 0,
         (type, it) => {
-          it.height = 400;
+          it.height = 0;
           it.width = width;
         },
       )}
