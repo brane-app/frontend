@@ -13,6 +13,7 @@
     "@react-navigation/drawer": "^6.1.8",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",
+    "@reduxjs/toolkit": "^1.8.6",
     "expo": "~43.0.2",
     "imonke": "^0.3.8",
     "react": "17.0.1",
@@ -25,7 +26,8 @@
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.9.0",
     "react-native-web": "0.17.1",
-    "recyclerlistview": "^3.0.5"
+    "recyclerlistview": "^3.0.5",
+    "redux": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
