@@ -5,6 +5,7 @@ import { Snackbar } from "react-native-paper";
 
 import { TextInputValidated } from "../component";
 import { Auth, do_submit, Input } from "../library/auth";
+import Events, { Event } from "../library/events";
 
 const draw_inputs = (kinds: [kind: Input, hook: (value: string) => null][]) => (
   kinds.map(([kind, hook]) => (
@@ -72,7 +73,16 @@ export default (props) => {
                 [Input.password, password],
               ]),
             )
-              .then((client) => props.on_auth(props, client))
+              .then((client: Client) => {
+                Events.dispatch(
+                  {
+                    type: "AUTH",
+                    token: client.token,
+                    secret: client.secret,
+                    expires: client.token_expires,
+                  }
+                );
+              })
               .catch((caught) => {
                 console.log(caught);
                 set_error_message(caught.message ?? caught);
