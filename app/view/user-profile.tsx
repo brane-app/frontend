@@ -8,5 +8,5 @@ interface Props {
 
 export default (props: Props) =>
   <View style={{ flex: 1 }}>
-    <Text>`profile of ${props.id}`</Text>
+    <Text>`profile of {props.id}`</Text>
   </View>;
