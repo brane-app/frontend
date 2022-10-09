@@ -3,9 +3,9 @@ import { SafeAreaView, StatusBar, View } from "react-native";
 
 import { AuthNavigator } from "./app/view";
 
-export default App = () => (
+export default () => (
   <SafeAreaView style={{ flex: 1 }}>
-    <StatusBar style={"light"} translucent={false} />
+    <StatusBar translucent={false} />
     <AuthNavigator />
   </SafeAreaView>
 );
