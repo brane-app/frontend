@@ -5,7 +5,8 @@ import { Snackbar } from "react-native-paper";
 
 import { TextInputValidated } from "../component";
 import { Auth, do_submit, Input } from "../library/auth";
-import Events, { Event } from "../library/events";
+import { auth_password, auth_register } from "../library/brane/auth";
+import { dispatch, subscribe, Event } from "../library/events"
 
 const draw_inputs = (kinds: [kind: Input, hook: (value: string) => null][]) => (
   kinds.map(([kind, hook]) => (
@@ -52,6 +53,10 @@ export default (props) => {
 
   let [error_message, set_error_message] = useState("");
 
+  subscribe("AUTH", (event: Event) => {
+    // TODO navigate to profile view
+  })
+
   return (
     <View>
       <View>
@@ -64,29 +69,12 @@ export default (props) => {
       <View>
         <Button
           title={"submit"}
-          onPress={() => {
-            do_submit(
-              submit_kind,
-              new Map([
-                [Input.nick, nick],
-                [Input.email, email],
-                [Input.password, password],
-              ]),
-            )
-              .then((client: Client) => {
-                Events.dispatch(
-                  {
-                    type: "AUTH",
-                    token: client.token,
-                    secret: client.secret,
-                    expires: client.token_expires,
-                  }
-                );
-              })
-              .catch((caught) => {
-                console.log(caught);
-                set_error_message(caught.message ?? caught);
-              });
+          onPress={async () => {
+            const token = submit_kind == Auth.register
+              ? await auth_register(nick, email, password, "")
+              : await auth_password(email, password)
+
+            dispatch({ type: "AUTH", ...token })
           }}
         />
       </View>

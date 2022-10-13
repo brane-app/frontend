@@ -1,21 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
+
+import { Event } from "./event"
 import { State, default_state } from "./state";
+import { invoke, subscribe } from "./subscribe";
 
-interface auth {
-  type: "AUTH";
-  token: string;
-  secret: string;
-  expires: number;
-}
-
-interface self_update {
-  type: "SELF_UPDATE";
-  update: { [key: string]: any; };
-}
-
-export type Event = auth | self_update;
-
-const handle = (state: State = default_state, event: Event): State => {
+const do_handle = (state: State, event: Event): State => {
   switch (event.type) {
     case "AUTH":
       return {
@@ -38,8 +27,15 @@ const handle = (state: State = default_state, event: Event): State => {
   }
 };
 
-const store = configureStore({ reducer: handle });
+const handle = (state: State = default_state, event: Event): State => {
+  const result = do_handle(state, event)
+  invoke(event.type, event).catch((reason) => { throw `failed to invoke for event ${event}\n${reason}` })
+  return result
+}
 
-store.subscribe(() => console.log(store.getState()));
 
-export default store;
+const store = configureStore({ reducer: handle })
+
+export const dispatch = (event: Event) => store.dispatch(event)
+export { Event }
+export { subscribe }
