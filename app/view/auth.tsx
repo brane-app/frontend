@@ -35,7 +35,7 @@ const draw_auth_toggle = (current, hook) => {
   );
 };
 
-const draw_error = (message: string, hook: (value: string) => null) => (
+const draw_error = (message: string, hook: (value: string) => void) => (
   <Snackbar
     duration={2000}
     visible={message != null}
@@ -50,7 +50,7 @@ export default (props) => {
   let [email, set_email] = useState(null);
   let [password, set_password] = useState(null);
 
-  let [error_message, set_error_message] = useState(null);
+  let [error_message, set_error_message] = useState("");
 
   return (
     <View>
