@@ -1,52 +1,52 @@
-import { Client } from "imonke";
 import React, { useState } from "react";
 import { Button, Pressable, Text, View } from "react-native";
 import { Snackbar } from "react-native-paper";
 
 import { TextInputValidated } from "../component";
-import { Auth, do_submit, Input } from "../library/auth";
 import { auth_password, auth_register } from "../library/brane/auth";
 import { dispatch, subscribe, Event } from "../library/events"
 
-const draw_inputs = (kinds: [kind: Input, hook: (value: string) => null][]) => (
-  kinds.map(([kind, hook]) => (
+type submit_kind = "login" | "register"
+type submit_field = "nick" | "email" | "password"
+
+const draw_inputs = (kinds: [field: submit_field, hook: (value: string) => void][]) => (
+  kinds.map(([field, hook]) => (
     <TextInputValidated
-      name={Input[kind]}
-      key={`input_text_${kind}`}
+      key={`input_text_${field}`}
       valueHook={hook}
-      secureTextEntry={kind === Input.password}
+      secureTextEntry={field === "password"}
     />
   ))
 );
 
-const draw_auth_toggle = (current, hook) => {
-  const [target, set_target] = useState(
-    current == Auth.register ? Auth.login : Auth.register,
-  );
+const draw_auth_toggle = (current_kind: submit_kind, hook: (value: submit_kind) => void) => {
+  const [target, set_target] = useState(current_kind == "register" ? "login" : "register" as submit_kind);
 
   return (
     <Pressable
       onPress={() => {
         hook(target);
-        set_target(current);
+        set_target(current_kind);
       }}
     >
-      <Text>{`I'd rather ${Auth[target]}`}</Text>
+      <Text>{`I'd rather ${target}`}</Text>
     </Pressable>
   );
 };
 
 const draw_error = (message: string, hook: (value: string) => void) => (
-  <Snackbar
-    duration={2000}
-    visible={message != null}
-    onDismiss={() => hook(null)}
-    children={message}
-  />
+  message == ""
+    ? null
+    : <Snackbar
+      duration={2000}
+      visible={message != null}
+      onDismiss={() => hook("")}
+      children={message}
+    />
 );
 
-export default (props) => {
-  let [submit_kind, set_submit_kind] = useState(props.kind ?? Auth.register);
+export default (props: { kind: submit_kind }) => {
+  let [submit_kind, set_submit_kind] = useState(props.kind ?? "register");
   let [nick, set_nick] = useState("");
   let [email, set_email] = useState("");
   let [password, set_password] = useState("");
@@ -60,17 +60,17 @@ export default (props) => {
   return (
     <View>
       <View>
-        {draw_inputs([
-          submit_kind == Auth.register ? [Input.nick, set_nick] : null,
-          [Input.email, set_email],
-          [Input.password, set_password],
-        ].filter((it) => it))}
+        {
+          submit_kind == "register"
+            ? draw_inputs([["nick", set_nick], ["email", set_email], ["password", set_password]])
+            : draw_inputs([["email", set_email], ["password", set_password]])
+        }
       </View>
       <View>
         <Button
           title={"submit"}
           onPress={async () => {
-            const token = submit_kind == Auth.register
+            const token = submit_kind == "register"
               ? await auth_register(nick, email, password, "")
               : await auth_password(email, password)
 
