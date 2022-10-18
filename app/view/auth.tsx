@@ -6,8 +6,6 @@ import { Button, Pressable, Text, View } from "react-native";
 import { TextInputValidated } from "../component";
 import { auth_password, auth_register } from "../library/brane/auth";
 import { dispatch, subscribe, Event, } from "../library/events";
-import { get_self } from "../library/brane/user";
-import { store } from "../library/events/store";
 
 type submit_kind = "login" | "register";
 type submit_field = "nick" | "email" | "password";
