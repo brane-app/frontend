@@ -6,6 +6,8 @@ import { invoke, subscribe } from "./subscribe";
 
 const do_handle = (state: State, event: Event): State => {
     switch (event.type) {
+        case "INIT":
+            return default_state;
         case "AUTH":
             return {
                 ...state,

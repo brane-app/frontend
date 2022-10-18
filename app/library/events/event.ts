@@ -1,3 +1,7 @@
+interface init {
+  type: "INIT";
+}
+
 interface auth {
   type: "AUTH";
   token: string;
@@ -10,4 +14,4 @@ interface self_update {
   update: { [key: string]: any; };
 }
 
-export type Event = auth | self_update;
+export type Event = init | auth | self_update;
