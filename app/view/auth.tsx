@@ -1,13 +1,16 @@
-import React, { useState } from "react";
-import { Button, Pressable, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import { Snackbar } from "react-native-paper";
+import { NavigationScreenProp } from "react-navigation";
+import { Button, Pressable, Text, View } from "react-native";
 
 import { TextInputValidated } from "../component";
 import { auth_password, auth_register } from "../library/brane/auth";
-import { dispatch, subscribe, Event } from "../library/events"
+import { dispatch, subscribe, Event, } from "../library/events";
+import { get_self } from "../library/brane/user";
+import { store } from "../library/events/store";
 
-type submit_kind = "login" | "register"
-type submit_field = "nick" | "email" | "password"
+type submit_kind = "login" | "register";
+type submit_field = "nick" | "email" | "password";
 
 const draw_inputs = (kinds: [field: submit_field, hook: (value: string) => void][]) => (
   kinds.map(([field, hook]) => (
@@ -45,7 +48,7 @@ const draw_error = (message: string, hook: (value: string) => void) => (
     />
 );
 
-export default (props: { kind: submit_kind }) => {
+export default (props: { kind: submit_kind, navigation: NavigationScreenProp<any, any>; }) => {
   let [submit_kind, set_submit_kind] = useState(props.kind ?? "register");
   let [nick, set_nick] = useState("");
   let [email, set_email] = useState("");
@@ -53,9 +56,23 @@ export default (props: { kind: submit_kind }) => {
 
   let [error_message, set_error_message] = useState("");
 
-  subscribe("AUTH", (event: Event) => {
-    // TODO navigate to profile view
-  })
+  let [token, set_token] = useState({ token: "", secret: "", expires: 0 });
+
+  const unsubscriber = subscribe("AUTH", async (event: Event) => {
+    event.type == "AUTH" && set_token(event);
+  });
+
+  useEffect(
+    () => {
+      if (token.token == "") {
+        return;
+      }
+
+      unsubscriber();
+      props.navigation.navigate("Root", { route: "Profile" });
+    },
+    [token]
+  );
 
   return (
     <View>
@@ -72,9 +89,9 @@ export default (props: { kind: submit_kind }) => {
           onPress={async () => {
             const token = submit_kind == "register"
               ? await auth_register(nick, email, password, "")
-              : await auth_password(email, password)
+              : await auth_password(email, password);
 
-            dispatch({ type: "AUTH", ...token })
+            dispatch({ type: "AUTH", ...token });
           }}
         />
       </View>
