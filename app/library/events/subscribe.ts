@@ -16,7 +16,16 @@ const get_callback = (id: string): Callback => {
     return callback
 }
 
-export const subscribe = (event_type: string, callback: Callback): string => {
+const unsubscriber = (event_type: string, id: string) =>
+    () => {
+        callbacks.delete(id)
+
+        const subs = get_subscription(event_type)
+        subs.delete(id)
+        subscriptions.set(event_type, subs)
+    }
+
+export const subscribe = (event_type: string, callback: Callback): () => void => {
     const id = uuid()
     callbacks.set(id, callback)
 
@@ -24,7 +33,7 @@ export const subscribe = (event_type: string, callback: Callback): string => {
     subs.add(id)
     subscriptions.set(event_type, subs)
 
-    return id
+    return unsubscriber(event_type, id)
 }
 
 // we could promise.all once we know this fundamentally works fine
