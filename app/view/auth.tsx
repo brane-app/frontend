@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { Button, Pressable, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import { Snackbar } from "react-native-paper";
+import { NavigationScreenProp } from "react-navigation"
+import { Button, Pressable, Text, View } from "react-native";
 
 import { TextInputValidated } from "../component";
 import { auth_password, auth_register } from "../library/brane/auth";
-import { dispatch, subscribe, Event } from "../library/events"
+import { dispatch, subscribe, Event, } from "../library/events"
 
 type submit_kind = "login" | "register"
 type submit_field = "nick" | "email" | "password"
@@ -45,7 +46,7 @@ const draw_error = (message: string, hook: (value: string) => void) => (
     />
 );
 
-export default (props: { kind: submit_kind }) => {
+export default (props: { kind: submit_kind, navigation: NavigationScreenProp<any, any> }) => {
   let [submit_kind, set_submit_kind] = useState(props.kind ?? "register");
   let [nick, set_nick] = useState("");
   let [email, set_email] = useState("");
@@ -53,9 +54,11 @@ export default (props: { kind: submit_kind }) => {
 
   let [error_message, set_error_message] = useState("");
 
-  subscribe("AUTH", (event: Event) => {
-    // TODO navigate to profile view
+  const unsubscribe_auth = subscribe("AUTH", (event: Event) => {
+    props.navigation.navigate({ key: "Profile", routeName: "Profle", params: { self: true } })
   })
+
+  useEffect(() => () => { unsubscribe_auth() })
 
   return (
     <View>
