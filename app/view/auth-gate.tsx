@@ -3,7 +3,7 @@ import { Button, View } from "react-native";
 import { store } from "../library/events/store";
 
 export default (props: any) =>
-  store.getState().auth.authed
+  store.getState()?.auth?.authed
     ? props.navigation.navigate("Root")
     : (
       <View>

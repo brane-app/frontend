@@ -1,4 +1,5 @@
 export interface State {
+  loaded: number;
   auth: {
     authed: boolean;
     token: string;
@@ -14,6 +15,7 @@ export interface State {
 
 
 export const default_state = {
+  loaded: 0,
   auth: {
     authed: false,
     token: "",

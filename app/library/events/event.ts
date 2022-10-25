@@ -1,5 +1,8 @@
-interface init {
-  type: "INIT";
+import { State } from "./state";
+
+interface load {
+  type: "LOAD";
+  state: State;
 }
 
 interface auth {
@@ -14,4 +17,4 @@ interface self_update {
   update: { [key: string]: any; };
 }
 
-export type Event = init | auth | self_update;
+export type Event = load | auth | self_update;

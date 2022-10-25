@@ -4,10 +4,10 @@ import { Event } from "./event";
 import { State, default_state } from "./state";
 import { invoke, subscribe } from "./subscribe";
 
-const do_handle = (state: State, event: Event): State => {
+const do_handle = (state: State = default_state, event: Event): State => {
     switch (event.type) {
-        case "INIT":
-            return default_state;
+        case "LOAD":
+            return { ...event.state, loaded: Date.now() };
         case "AUTH":
             return {
                 ...state,
@@ -29,15 +29,15 @@ const do_handle = (state: State, event: Event): State => {
     }
 };
 
-const handle = (state: State = default_state, event: Event): State => {
+const reducer = (state: State = default_state, event: Event): State => {
     const result = do_handle(state, event);
     invoke(event.type, event, state).catch((reason) => { throw `failed to invoke for event ${event}\n${reason}`; });
     return result;
 };
 
-
-export const store = configureStore({ reducer: handle });
-
+export const store = configureStore({ reducer: reducer, preloadedState: default_state });
 export const dispatch = (event: Event) => store.dispatch(event);
+
 export { Event };
 export { subscribe };
+
